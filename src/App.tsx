@@ -4,8 +4,6 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
   Leaf,
-  Recycle,
-  Bot,
   Lightbulb,
   TriangleAlert,
   ArrowRight,
@@ -18,14 +16,12 @@ import {
   Apple,
   BarChart3,
   Database,
-  Cpu,
   FileText,
   Package,
   ScanSearch,
   ArrowUpRight,
   Award,
   ExternalLink,
-  Check,
   ShieldCheck,
   Globe,
   Sprout,
@@ -33,6 +29,7 @@ import {
   Sparkles,
   Layers,
   Monitor,
+  ClipboardCheck,
 } from "lucide-react"
 
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
