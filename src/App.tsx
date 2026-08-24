@@ -82,7 +82,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* NAV */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-[64px] w-full max-w-[1200px] items-center justify-between px-4 sm:px-6">
@@ -165,56 +165,57 @@ export default function App() {
         </div>
 
         <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-8 sm:px-6 lg:grid-cols-2 lg:gap-10 lg:py-16 items-start">
-          {/* Left */}
-          <div className="flex flex-col justify-start pt-2 min-w-0">
-            <Badge variant="secondary" className="mb-4 w-fit gap-2 rounded-full border bg-white px-3 py-1.5 text-[11px] font-bold tracking-[0.08em] shadow-sm dark:bg-card">
-              <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] text-white"><Award className="size-3" /></span>
-              INDIAN SCIENCE CONGRESS 2026 • OFFICIAL ENTRY
+          {/* Left - fully responsive */}
+          <div className="flex flex-col justify-start pt-2 min-w-0 w-full">
+            <Badge variant="secondary" className="mb-4 w-fit gap-1.5 sm:gap-2 rounded-full border bg-white px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-bold tracking-[0.06em] sm:tracking-[0.08em] shadow-sm dark:bg-card max-w-full text-center leading-tight">
+              <span className="flex size-4 sm:size-5 items-center justify-center rounded-full bg-primary text-[10px] sm:text-[11px] text-white shrink-0"><Award className="size-3" /></span>
+              <span className="hidden sm:inline">INDIAN SCIENCE CONGRESS 2026 • OFFICIAL ENTRY</span>
+              <span className="sm:hidden">ISC 2026 • OFFICIAL ENTRY</span>
             </Badge>
 
-            <h1 className="text-[32px] font-extrabold leading-[0.98] tracking-tight sm:text-[42px] lg:text-[50px]">
+            <h1 className="text-[26px] sm:text-[32px] md:text-[38px] lg:text-[44px] xl:text-[50px] font-extrabold leading-[0.95] tracking-tight">
               <span className="bg-gradient-to-br from-primary to-emerald-600 bg-clip-text text-transparent">Sustainability</span> Hub
-              <span className="mt-2 block text-[18px] font-semibold tracking-tight text-muted-foreground sm:text-[20px]">AI that sees waste differently.</span>
+              <span className="mt-1.5 sm:mt-2 block text-[15px] sm:text-[17px] lg:text-[20px] font-semibold tracking-tight text-muted-foreground">AI that sees waste differently.</span>
             </h1>
 
-            <p className="mt-4 max-w-[580px] text-[14px] leading-relaxed text-muted-foreground sm:text-[15px]">
+            <p className="mt-3 sm:mt-4 max-w-[580px] text-[13px] sm:text-[14px] lg:text-[15px] leading-relaxed text-muted-foreground">
               The core is simple and powerful — <span className="font-semibold text-foreground">take a photo of any garbage</span> and the hub tells you
               material breakdown by %, toxins & hazard score, everyday uses, eco-alternatives, reuse ideas and <span className="font-semibold text-foreground">exactly where to dispose it</span>.
               Built as a real standalone Windows app (Tauri .exe + .msi) with live Gemini AI.
             </p>
 
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Button size="lg" className="rounded-full px-7 shadow-lg shadow-primary/20" onClick={() => scrollTo("software")}>
+            <div className="mt-5 sm:mt-7 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+              <Button size="lg" className="w-full sm:w-auto rounded-full px-6 sm:px-7 shadow-lg shadow-primary/20 text-[14px] sm:text-[15px] h-11 sm:h-12" onClick={() => scrollTo("software")}>
                 <Download className="size-4" /> Download for Windows
               </Button>
-              <Button variant="outline" size="lg" className="rounded-full bg-white dark:bg-card" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-full bg-white dark:bg-card text-[14px] sm:text-[15px] h-11 sm:h-12" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}>
                 <GithubIcon className="size-4" /> View on GitHub <ExternalLink className="size-3.5 opacity-60" />
               </Button>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-2 text-xs">
-              <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 font-medium">
-                <span className="size-2 rounded-full bg-emerald-500 animate-pulse" /> Live Gemini 3.6 Flash
+            <div className="mt-5 sm:mt-6 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full border bg-card px-2.5 sm:px-3 py-1 sm:py-1.5 font-medium">
+                <span className="size-1.5 sm:size-2 rounded-full bg-emerald-500 animate-pulse" /> Live Gemini 3.6 Flash
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 font-medium">
-                <Monitor className="size-3.5" /> Tauri v2 • Native .exe + .msi
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full border bg-card px-2.5 sm:px-3 py-1 sm:py-1.5 font-medium">
+                <Monitor className="size-3 sm:size-3.5" /> Tauri v2 • .exe + .msi
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 font-medium">
-                <FileText className="size-3.5" /> Daily Logs on GitHub
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full border bg-card px-2.5 sm:px-3 py-1 sm:py-1.5 font-medium">
+                <FileText className="size-3 sm:size-3.5" /> Daily Logs
               </span>
             </div>
 
-            <div className="mt-7 grid max-w-[520px] grid-cols-3 gap-3">
+            <div className="mt-6 sm:mt-7 grid max-w-full sm:max-w-[520px] grid-cols-3 gap-2 sm:gap-3">
               {[
                 { icon: <Recycle className="size-4 text-primary" />, label: "100%", sub: "Material %" },
                 { icon: <TriangleAlert className="size-4 text-amber-600" />, label: "Toxin", sub: "& Hazard" },
                 { icon: <Earth className="size-4 text-emerald-600" />, label: "Reuse", sub: "+ Disposal" },
               ].map((s) => (
-                <div key={s.label} className="flex items-center gap-2.5 rounded-2xl border bg-card px-3 py-3 shadow-sm">
-                  <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10">{s.icon}</div>
-                  <div className="leading-none">
-                    <div className="text-sm font-bold">{s.label}</div>
-                    <div className="text-xs text-muted-foreground">{s.sub}</div>
+                <div key={s.label} className="flex items-center gap-2 sm:gap-2.5 rounded-2xl border bg-card px-3 py-2.5 sm:py-3 shadow-sm">
+                  <div className="flex size-8 sm:size-9 items-center justify-center rounded-xl bg-primary/10 shrink-0">{s.icon}</div>
+                  <div className="leading-none min-w-0">
+                    <div className="text-sm font-bold truncate">{s.label}</div>
+                    <div className="text-[11px] sm:text-xs text-muted-foreground truncate">{s.sub}</div>
                   </div>
                 </div>
               ))}
@@ -382,18 +383,18 @@ export default function App() {
         </div>
       </section>
 
-      {/* WHAT IT DOES */}
-      <section id="what" className="border-t bg-muted/30 py-12 sm:py-16">
+      {/* WHAT IT DOES - responsive */}
+      <section id="what" className="border-t bg-muted/30 py-8 sm:py-12 lg:py-16">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-          <div className="mx-auto max-w-[760px] text-center">
-            <Badge variant="secondary" className="rounded-full border bg-white px-3 py-1 dark:bg-card">CORE FEATURE • AI GARBAGE ANALYSIS</Badge>
-            <h2 className="mt-3 text-[28px] font-extrabold tracking-tight sm:text-4xl">What Sustainability Hub Does</h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+          <div className="mx-auto max-w-[760px] text-center px-2 sm:px-0">
+            <Badge variant="secondary" className="rounded-full border bg-white px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs dark:bg-card">CORE FEATURE • AI GARBAGE ANALYSIS</Badge>
+            <h2 className="mt-3 text-[22px] sm:text-[28px] lg:text-[32px] xl:text-4xl font-extrabold tracking-tight">What Sustainability Hub Does</h2>
+            <p className="mt-2 sm:mt-3 text-[13px] sm:text-sm lg:text-[15px] leading-relaxed text-muted-foreground">
               One photo is enough. The hub runs a structured Gemini vision prompt and returns everything a citizen, student or kabadiwala needs to act — not just a label.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 sm:mt-8 lg:mt-10 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 icon: <BarChart3 className="size-5" />,
@@ -448,18 +449,18 @@ export default function App() {
             ))}
           </div>
 
-          <Card className="mt-6 overflow-hidden rounded-[22px] border bg-card p-0 shadow-sm">
+          <Card className="mt-6 sm:mt-8 overflow-hidden rounded-[20px] sm:rounded-[22px] border bg-card p-0 shadow-sm">
             <div className="grid lg:grid-cols-[1.2fr_0.8fr]">
-              <div className="p-6 sm:p-7">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary"><Sparkles className="size-3.5" /> EXAMPLE OUTPUT</div>
-                <h3 className="mt-3 text-lg font-bold leading-tight">A plastic bottle with leftover juice</h3>
+              <div className="p-4 sm:p-6 lg:p-7">
+                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold text-primary"><Sparkles className="size-3 sm:size-3.5" /> EXAMPLE OUTPUT</div>
+                <h3 className="mt-2 sm:mt-3 text-base sm:text-lg font-bold leading-tight">A plastic bottle with leftover juice</h3>
                 <div className="mt-3 grid gap-3 text-sm">
-                  <div className="rounded-xl border bg-muted/40 p-3">
-                    <div className="text-xs font-bold tracking-wide text-muted-foreground">GEMINI RETURNS (structured JSON)</div>
-                    <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
-                      <div className="rounded-xl bg-white p-2.5 text-center dark:bg-card"><div className="font-extrabold">PET 58%</div><div className="text-muted-foreground">Bottle</div></div>
-                      <div className="rounded-xl bg-white p-2.5 text-center dark:bg-card"><div className="font-extrabold">PP 22%</div><div className="text-muted-foreground">Cap</div></div>
-                      <div className="rounded-xl bg-white p-2.5 text-center dark:bg-card"><div className="font-extrabold">Organic 20%</div><div className="text-muted-foreground">Residue</div></div>
+                  <div className="rounded-xl border bg-muted/40 p-2.5 sm:p-3">
+                    <div className="text-[11px] sm:text-xs font-bold tracking-wide text-muted-foreground">GEMINI RETURNS (structured JSON)</div>
+                    <div className="mt-2 grid grid-cols-3 gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
+                      <div className="rounded-xl bg-white p-2 sm:p-2.5 text-center dark:bg-card"><div className="font-extrabold">PET 58%</div><div className="text-muted-foreground text-[10px] sm:text-xs">Bottle</div></div>
+                      <div className="rounded-xl bg-white p-2 sm:p-2.5 text-center dark:bg-card"><div className="font-extrabold">PP 22%</div><div className="text-muted-foreground text-[10px] sm:text-xs">Cap</div></div>
+                      <div className="rounded-xl bg-white p-2 sm:p-2.5 text-center dark:bg-card"><div className="font-extrabold">Organic 20%</div><div className="text-muted-foreground text-[10px] sm:text-xs">Residue</div></div>
                     </div>
                     <div className="mt-2 text-xs leading-relaxed text-muted-foreground">
                       <span className="font-semibold text-amber-600">Hazard: Low</span> • BPA trace if heated • <span className="font-semibold text-emerald-600">Reuse:</span> refill, planter, storage •
@@ -488,16 +489,16 @@ export default function App() {
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section id="features" className="py-12 sm:py-16">
+      {/* FEATURES - responsive */}
+      <section id="features" className="py-8 sm:py-12 lg:py-16">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-          <div className="text-center">
-            <div className="text-xs font-bold tracking-[0.14em] text-primary">BEYOND THE SCANNER — FULL HUB</div>
-            <h2 className="mt-2 text-[28px] font-extrabold tracking-tight sm:text-4xl">Four Pillars + One Hub</h2>
-            <p className="mx-auto mt-2 max-w-[640px] text-sm text-muted-foreground">The analyzer is the hero, but the hub wraps it in the daily sustainability life — carbon, energy, food — all in one native app.</p>
+          <div className="text-center px-2 sm:px-0">
+            <div className="text-[11px] sm:text-xs font-bold tracking-[0.12em] sm:tracking-[0.14em] text-primary">BEYOND THE SCANNER — FULL HUB</div>
+            <h2 className="mt-2 text-[22px] sm:text-[28px] lg:text-[32px] xl:text-4xl font-extrabold tracking-tight">Four Pillars + One Hub</h2>
+            <p className="mx-auto mt-2 max-w-[640px] text-[13px] sm:text-sm leading-relaxed text-muted-foreground">The analyzer is the hero, but the hub wraps it in the daily sustainability life — carbon, energy, food — all in one native app.</p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 sm:mt-8 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
                 icon: <ScanSearch className="size-5" />,
@@ -551,62 +552,62 @@ export default function App() {
             ))}
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <div className="mt-6 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <Card className="rounded-2xl border bg-muted/30 p-4 text-sm">
-              <div className="flex items-center gap-2 font-bold"><Cpu className="size-4 text-primary" /> Gemini, not mock</div>
-              <div className="mt-1 text-muted-foreground">Real `POST /api/v1/waste/analyze` with 180s timeout, structured JSON, ~10s verified. No demo placebo.</div>
+              <div className="flex items-center gap-2 font-bold text-sm"><Cpu className="size-4 text-primary" /> Gemini, not mock</div>
+              <div className="mt-1 text-[13px] sm:text-sm leading-relaxed text-muted-foreground">Real `POST /api/v1/waste/analyze` with 180s timeout, structured JSON, ~10s verified.</div>
             </Card>
             <Card className="rounded-2xl border bg-muted/30 p-4 text-sm">
-              <div className="flex items-center gap-2 font-bold"><Box className="size-4 text-emerald-600" /> Light • Dark • Midnight</div>
-              <div className="mt-1 text-muted-foreground">Porcelain vs Midnight tokens, anti-flash script, chart chrome hook — ships in the .exe.</div>
+              <div className="flex items-center gap-2 font-bold text-sm"><Box className="size-4 text-emerald-600" /> Light • Dark • Midnight</div>
+              <div className="mt-1 text-[13px] sm:text-sm leading-relaxed text-muted-foreground">Porcelain vs Midnight tokens, anti-flash — ships in the .exe.</div>
             </Card>
-            <Card className="rounded-2xl border bg-muted/30 p-4 text-sm">
-              <div className="flex items-center gap-2 font-bold"><GithubIcon className="size-4" /> Daily GitHub proof</div>
-              <div className="mt-1 text-muted-foreground">Every day’s work logged in `logs/YYYY-MM-DD.md` — auto-committed for ISC judging.</div>
+            <Card className="rounded-2xl border bg-muted/30 p-4 text-sm sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center gap-2 font-bold text-sm"><GithubIcon className="size-4" /> Daily GitHub proof</div>
+              <div className="mt-1 text-[13px] sm:text-sm leading-relaxed text-muted-foreground">Every day’s work logged in `logs/YYYY-MM-DD.md` — auto-committed.</div>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* SOFTWARE / DOWNLOAD */}
-      <section id="software" className="border-y bg-muted/30 py-12 sm:py-16">
+      {/* SOFTWARE / DOWNLOAD - responsive */}
+      <section id="software" className="border-y bg-muted/30 py-8 sm:py-12 lg:py-16">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-          <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-            <div>
-              <Badge className="rounded-full bg-primary px-3 py-1 text-xs font-bold tracking-wide">REAL SOFTWARE • NOT A DEMO SITE</Badge>
-              <h2 className="mt-3 text-[28px] font-extrabold tracking-tight sm:text-[34px]">Standalone Windows App</h2>
-              <h3 className="text-[18px] font-semibold text-primary">Native Tauri • .exe portable + .msi installer</h3>
-              <p className="mt-3 max-w-[560px] text-sm leading-relaxed text-muted-foreground">
+          <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+            <div className="min-w-0">
+              <Badge className="rounded-full bg-primary px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold tracking-wide">REAL SOFTWARE • NOT A DEMO SITE</Badge>
+              <h2 className="mt-3 text-[22px] sm:text-[28px] lg:text-[30px] xl:text-[34px] font-extrabold tracking-tight">Standalone Windows App</h2>
+              <h3 className="text-[15px] sm:text-[17px] lg:text-[18px] font-semibold text-primary">Native Tauri • .exe portable + .msi installer</h3>
+              <p className="mt-3 max-w-[560px] text-[13px] sm:text-sm leading-relaxed text-muted-foreground">
                 The website you’re on is the promo. The product lives in{" "}
-                <code className="rounded bg-white px-1.5 py-0.5 text-xs dark:bg-card">D:\Visual Studio Files\Sustainability</code> — a Vite + React frontend baked into a Rust/Tauri shell. No browser tab, no localhost faff — double-click and it runs.
+                <code className="rounded bg-white px-1.5 py-0.5 text-[11px] sm:text-xs dark:bg-card break-all">D:\Visual Studio Files\Sustainability</code> — a Vite + React frontend baked into a Rust/Tauri shell. No browser tab, no localhost faff — double-click and it runs.
               </p>
 
               <div className="mt-6 grid gap-3">
-                <Card className="flex items-start gap-3 rounded-2xl border bg-card p-4">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-white"><Package className="size-5" /></span>
-                  <div>
+                <Card className="flex items-start gap-3 rounded-2xl border bg-card p-3 sm:p-4">
+                  <span className="flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-white"><Package className="size-4 sm:size-5" /></span>
+                  <div className="min-w-0">
                     <div className="text-sm font-bold">Zero-install .exe (portable)</div>
-                    <div className="text-xs leading-relaxed text-muted-foreground">`desktop/src-tauri/target/release/Sustainability Hub.exe` — runs straight, embeds `dist/` at build time. Backend on :8000 + Vite on :1420 auto-started by `start-app.pyw` (windowless pythonw + ShellExecuteW, no console flash).</div>
+                    <div className="text-[11px] sm:text-xs leading-relaxed text-muted-foreground break-words">`desktop/src-tauri/target/release/Sustainability Hub.exe` — runs straight, embeds `dist/` at build time. Backend on :8000 + Vite on :1420 auto-started by `start-app.pyw` (windowless pythonw + ShellExecuteW, no console flash).</div>
                   </div>
                 </Card>
-                <Card className="flex items-start gap-3 rounded-2xl border bg-card p-4">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-white dark:bg-zinc-800"><Download className="size-5" /></span>
-                  <div>
+                <Card className="flex items-start gap-3 rounded-2xl border bg-card p-3 sm:p-4">
+                  <span className="flex size-8 sm:size-9 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-white dark:bg-zinc-800"><Download className="size-4 sm:size-5" /></span>
+                  <div className="min-w-0">
                     <div className="text-sm font-bold">Installer .msi</div>
-                    <div className="text-xs leading-relaxed text-muted-foreground">`.../bundle/msi/Sustainability Hub_1.0.0_x64_en-US.msi` — proper Windows installer with Start Menu + Desktop shortcut. Build with `-j1` on low-disk machines (recipe in README/logs).</div>
+                    <div className="text-[11px] sm:text-xs leading-relaxed text-muted-foreground break-words">`.../bundle/msi/Sustainability Hub_1.0.0_x64_en-US.msi` — proper Windows installer with Start Menu + Desktop shortcut. Build with `-j1` on low-disk machines.</div>
                   </div>
                 </Card>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button size="lg" className="rounded-full px-6" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases", "_blank")}>
+              <div className="mt-6 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+                <Button size="lg" className="w-full sm:w-auto rounded-full px-6 text-[14px] sm:text-[15px]" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases", "_blank")}>
                   <Download className="size-4" /> Download .exe / .msi <ArrowUpRight className="size-4 opacity-70" />
                 </Button>
-                <Button variant="outline" size="lg" className="rounded-full bg-white dark:bg-card" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}>
+                <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-full bg-white dark:bg-card text-[14px] sm:text-[15px]" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}>
                   <GithubIcon className="size-4" /> Source + logs
                 </Button>
               </div>
-              <div className="mt-3 text-xs text-muted-foreground">Build: <code className="rounded bg-white px-1 py-0.5 dark:bg-card">npx vite build → npx tauri build --bundles msi</code> • Desktop shortcut → <code className="rounded bg-white px-1 py-0.5 dark:bg-card">pythonw + start-app.pyw</code></div>
+              <div className="mt-3 text-[11px] sm:text-xs leading-relaxed text-muted-foreground break-words">Build: <code className="rounded bg-white px-1 py-0.5 dark:bg-card break-all">npx vite build → npx tauri build --bundles msi</code> • Desktop shortcut → <code className="rounded bg-white px-1 py-0.5 dark:bg-card break-all">pythonw + start-app.pyw</code></div>
             </div>
 
             <div className="space-y-4">
@@ -652,16 +653,16 @@ export default function App() {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section id="how" className="py-12 sm:py-16">
+      {/* HOW IT WORKS - responsive */}
+      <section id="how" className="py-8 sm:py-12 lg:py-16">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-          <div className="text-center">
-            <div className="text-xs font-bold tracking-[0.14em] text-primary">HOW IT WORKS</div>
-            <h2 className="mt-2 text-[28px] font-extrabold tracking-tight sm:text-4xl">Photo → Insight → Action in ~10s</h2>
-            <p className="mx-auto mt-2 max-w-[620px] text-sm text-muted-foreground">No manual sorting, no guessing bins. The hub does the thinking, you do the doing.</p>
+          <div className="text-center px-2 sm:px-0">
+            <div className="text-[11px] sm:text-xs font-bold tracking-[0.12em] sm:tracking-[0.14em] text-primary">HOW IT WORKS</div>
+            <h2 className="mt-2 text-[22px] sm:text-[28px] lg:text-[32px] xl:text-4xl font-extrabold tracking-tight">Photo → Insight → Action in ~10s</h2>
+            <p className="mx-auto mt-2 max-w-[620px] text-[13px] sm:text-sm leading-relaxed text-muted-foreground">No manual sorting, no guessing bins. The hub does the thinking, you do the doing.</p>
           </div>
 
-          <div className="relative mt-10 grid gap-6 md:grid-cols-3">
+          <div className="relative mt-6 sm:mt-8 lg:mt-10 grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3">
             <div className="pointer-events-none absolute left-[16%] right-[16%] top-[36px] hidden h-0.5 bg-gradient-to-r from-primary/20 via-primary/20 to-primary/20 md:block" />
             {[
               { n: "01", icon: <ScanSearch className="size-6" />, title: "Capture", desc: "Drop a photo or snap with webcam. Any garbage — mixed pile, kitchen waste, e-waste — one image is enough." },
@@ -677,60 +678,60 @@ export default function App() {
             ))}
           </div>
 
-          <div className="mx-auto mt-8 flex max-w-[720px] items-center gap-3 rounded-2xl border bg-amber-50 px-4 py-3 text-xs font-medium text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
-            <Lightbulb className="size-4 shrink-0" /> Editing <code className="rounded bg-white px-1 dark:bg-card">tailwind.config.js</code> needs a Vite restart + hard refresh — otherwise styles stay stale. Same for frontend → rebuild exe before desktop sees it.
+          <div className="mx-auto mt-6 sm:mt-8 flex max-w-[720px] items-start sm:items-center gap-2 sm:gap-3 rounded-2xl border bg-amber-50 px-3 sm:px-4 py-2.5 sm:py-3 text-[11px] sm:text-xs font-medium leading-relaxed text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+            <Lightbulb className="size-4 shrink-0 mt-0.5 sm:mt-0" /> <span>Editing <code className="rounded bg-white px-1 dark:bg-card break-all">tailwind.config.js</code> needs a Vite restart + hard refresh — otherwise styles stay stale. Same for frontend → rebuild exe before desktop sees it.</span>
           </div>
         </div>
       </section>
 
-      {/* ABOUT ISC */}
-      <section id="about" className="border-t bg-muted/30 py-12 sm:py-16">
+      {/* ABOUT ISC - responsive */}
+      <section id="about" className="border-t bg-muted/30 py-8 sm:py-12 lg:py-16">
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-          <div className="grid items-start gap-10 lg:grid-cols-2">
-            <div>
-              <div className="text-xs font-bold tracking-[0.14em] text-primary">ABOUT • INDIAN SCIENCE CONGRESS 2026</div>
-              <h2 className="mt-2 text-[28px] font-extrabold tracking-tight sm:text-4xl">Technology For A Cleaner India</h2>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+          <div className="grid items-start gap-8 sm:gap-10 lg:grid-cols-2">
+            <div className="min-w-0">
+              <div className="text-[11px] sm:text-xs font-bold tracking-[0.12em] sm:tracking-[0.14em] text-primary">ABOUT • INDIAN SCIENCE CONGRESS 2026</div>
+              <h2 className="mt-2 text-[22px] sm:text-[28px] lg:text-[32px] xl:text-4xl font-extrabold tracking-tight">Technology For A Cleaner India</h2>
+              <p className="mt-3 sm:mt-4 text-[13px] sm:text-sm lg:text-[15px] leading-relaxed text-muted-foreground">
                 Sustainability Hub is our ISC 2026 entry — <span className="font-semibold text-foreground">practical environmental education</span>, not a poster.
                 Instead of saying “waste is bad”, it shows <span className="font-semibold text-foreground">what it is, why it matters, and what you can do right now</span> — with a real AI, a real .exe, and daily public proof on GitHub.
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Branch <code className="rounded bg-white px-1.5 py-0.5 text-xs dark:bg-card">master</code> • Remote <code className="rounded bg-white px-1.5 py-0.5 text-xs dark:bg-card">sustainability-hub.git</code> • Latest: pie-color fix, windowless launcher, dark-mode tokens.</p>
+              <p className="mt-3 text-[13px] sm:text-sm leading-relaxed text-muted-foreground break-words">Branch <code className="rounded bg-white px-1.5 py-0.5 text-[11px] sm:text-xs dark:bg-card break-all">master</code> • Remote <code className="rounded bg-white px-1.5 py-0.5 text-[11px] sm:text-xs dark:bg-card break-all">sustainability-hub.git</code> • Latest: pie-color fix, windowless launcher, dark-mode tokens.</p>
 
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <div className="flex gap-3 rounded-2xl border bg-card p-4">
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"><Sprout className="size-5" /></span>
-                  <div>
+              <div className="mt-5 sm:mt-6 grid gap-3 grid-cols-1 sm:grid-cols-2">
+                <div className="flex gap-3 rounded-2xl border bg-card p-3 sm:p-4">
+                  <span className="flex size-8 sm:size-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 shrink-0"><Sprout className="size-4 sm:size-5" /></span>
+                  <div className="min-w-0">
                     <div className="text-sm font-bold">Small actions, big delta</div>
                     <div className="text-xs leading-relaxed text-muted-foreground">One correct bin choice × 1.4B people = gigatonnes avoided.</div>
                   </div>
                 </div>
-                <div className="flex gap-3 rounded-2xl border bg-card p-4">
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"><FlaskConical className="size-5" /></span>
-                  <div>
+                <div className="flex gap-3 rounded-2xl border bg-card p-3 sm:p-4">
+                  <span className="flex size-8 sm:size-9 items-center justify-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300 shrink-0"><FlaskConical className="size-4 sm:size-5" /></span>
+                  <div className="min-w-0">
                     <div className="text-sm font-bold">Expandable to city scale</div>
                     <div className="text-xs leading-relaxed text-muted-foreground">Add centre DB, maps, user accounts & impact ledger anytime.</div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 rounded-2xl border bg-card p-4">
-                <div className="text-xs font-bold tracking-wide">TECH STACK</div>
-                <div className="mt-2 grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="rounded-xl bg-muted/40 p-3"><div className="font-bold">Desktop</div><div className="text-muted-foreground">Tauri v2 + Vite + React + Tailwind</div></div>
-                  <div className="rounded-xl bg-muted/40 p-3"><div className="font-bold">Mobile</div><div className="text-muted-foreground">Expo Router + Zustand</div></div>
-                  <div className="rounded-xl bg-muted/40 p-3"><div className="font-bold">Backend</div><div className="text-muted-foreground">FastAPI + SQLite + Gemini</div></div>
+              <div className="mt-5 sm:mt-6 rounded-2xl border bg-card p-3 sm:p-4">
+                <div className="text-[11px] sm:text-xs font-bold tracking-wide">TECH STACK</div>
+                <div className="mt-2 grid grid-cols-3 gap-1.5 sm:gap-2 text-center text-[11px] sm:text-xs">
+                  <div className="rounded-xl bg-muted/40 p-2 sm:p-3"><div className="font-bold text-[11px] sm:text-xs">Desktop</div><div className="text-muted-foreground text-[10px] sm:text-xs leading-tight">Tauri v2 + Vite + React</div></div>
+                  <div className="rounded-xl bg-muted/40 p-2 sm:p-3"><div className="font-bold text-[11px] sm:text-xs">Mobile</div><div className="text-muted-foreground text-[10px] sm:text-xs leading-tight">Expo Router + Zustand</div></div>
+                  <div className="rounded-xl bg-muted/40 p-2 sm:p-3"><div className="font-bold text-[11px] sm:text-xs">Backend</div><div className="text-muted-foreground text-[10px] sm:text-xs leading-tight">FastAPI + SQLite</div></div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="rounded-[22px] border bg-gradient-to-br from-primary to-emerald-600 p-6 text-white shadow-xl">
-                <div className="flex items-center gap-2 text-sm font-semibold opacity-90"><Globe className="size-4" /> Mission</div>
-                <div className="mt-3 text-[22px] font-extrabold leading-tight">Make segregation a reflex — with AI.</div>
-                <div className="mt-2 text-sm leading-relaxed opacity-90">From classrooms to societies to MRFs, Sustainability Hub turns everyday waste photos into clean, actionable knowledge — installable in one click.</div>
+            <div className="space-y-3 sm:space-y-4 min-w-0">
+              <div className="rounded-[20px] sm:rounded-[22px] border bg-gradient-to-br from-primary to-emerald-600 p-5 sm:p-6 text-white shadow-xl">
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold opacity-90"><Globe className="size-4" /> Mission</div>
+                <div className="mt-2 sm:mt-3 text-[20px] sm:text-[22px] font-extrabold leading-tight">Make segregation a reflex — with AI.</div>
+                <div className="mt-2 text-[13px] sm:text-sm leading-relaxed opacity-90">From classrooms to societies to MRFs, Sustainability Hub turns everyday waste photos into clean, actionable knowledge — installable in one click.</div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <Card className="rounded-[20px] p-5">
                   <div className="flex size-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600"><Trash2 className="size-5" /></div>
                   <div className="mt-3 text-2xl font-extrabold leading-none">62M</div>
