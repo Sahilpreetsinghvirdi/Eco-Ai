@@ -164,9 +164,9 @@ export default function App() {
           <div className="absolute top-[30%] left-[-10%] size-[420px] rounded-full bg-emerald-300/10 blur-[90px] dark:bg-emerald-900/15" />
         </div>
 
-        <div className="mx-auto grid max-w-[1200px] gap-10 px-4 py-8 sm:px-6 md:grid-cols-2 md:gap-8 md:py-14 lg:py-16">
+        <div className="mx-auto grid max-w-[1200px] gap-10 px-4 py-8 sm:px-6 md:grid-cols-2 md:gap-8 md:py-14 lg:py-16 items-start">
           {/* Left */}
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-start pt-2">
             <Badge variant="secondary" className="mb-4 w-fit gap-2 rounded-full border bg-white px-3 py-1.5 text-[11px] font-bold tracking-[0.08em] shadow-sm dark:bg-card">
               <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] text-white"><Award className="size-3" /></span>
               INDIAN SCIENCE CONGRESS 2026 • OFFICIAL ENTRY
@@ -319,17 +319,16 @@ export default function App() {
                       ))}
                     </div>
 
-                    {/* hazard card - interactive - 2D only, tip overlays without pushing layout */}
-                    <div className={`group relative rounded-2xl border p-3 transition-[transform,box-shadow,border-color] duration-300 cursor-pointer isolate ${hoveredStat === 99 ? "border-amber-300 bg-amber-100/70 shadow-sm dark:bg-amber-900/30" : "bg-amber-50/70 dark:bg-amber-950/20 hover:border-amber-200 hover:shadow-sm"}`} onMouseEnter={() => setHoveredStat(99)} onMouseLeave={() => setHoveredStat(null)}>
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300"><TriangleAlert className={`size-3.5 transition-transform duration-300 ${hoveredStat === 99 ? "scale-105 text-amber-600" : "group-hover:scale-105"}`} /> Low hazard • BPA trace <span className={`ml-auto rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white transition-all duration-300 ${hoveredStat === 99 ? "opacity-100 scale-100" : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"}`}>Tap to learn</span></div>
-                      <div className="mt-1 text-[11px] leading-relaxed text-amber-800/80 dark:text-amber-100/70">Rinse & flatten. Dispose in blue bin — Kabadiwala / MRF accepts PET at ₹12–14/kg.</div>
-                      {/* tip overlays absolutely - does NOT change card height */}
-                      <div className={`pointer-events-none absolute left-2 right-2 top-full z-20 mt-2 transition-all duration-300 ${hoveredStat === 99 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}>
-                        <div className="rounded-xl bg-white p-2.5 text-[11px] leading-relaxed dark:bg-card border shadow-lg">💡 <span className="font-semibold">Why?</span> PET is safe at room temp but BPA leaches when heated. Never microwave this bottle. Reuse as storage, not for hot liquids.</div>
+                    {/* hazard card - interactive - fixed height, no layout push, calm */}
+                    <div className={`group relative flex flex-col justify-between rounded-2xl border p-3 transition-[border-color,background-color,box-shadow] duration-300 cursor-pointer isolate h-[112px] overflow-hidden ${hoveredStat === 99 ? "border-amber-300 bg-amber-50 shadow-sm dark:bg-amber-950/30" : "bg-amber-50/70 dark:bg-amber-950/20 hover:border-amber-200 hover:shadow-sm"}`} onMouseEnter={() => setHoveredStat(99)} onMouseLeave={() => setHoveredStat(null)}>
+                      <div>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300"><TriangleAlert className={`size-3.5 transition-transform duration-300 ${hoveredStat === 99 ? "scale-105 text-amber-600" : "group-hover:scale-105"}`} /> Low hazard • BPA trace <span className={`ml-auto rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white transition-all duration-300 ${hoveredStat === 99 ? "opacity-100 scale-100" : "opacity-60 group-hover:opacity-100"}`}>Tap to learn</span></div>
+                        <div className="mt-1.5 text-[11px] leading-relaxed text-amber-800/80 dark:text-amber-100/70">Rinse & flatten. Dispose in blue bin — Kabadiwala / MRF accepts PET at ₹12–14/kg.</div>
+                      </div>
+                      <div className={`rounded-xl border bg-white p-2 text-[11px] leading-relaxed shadow-sm dark:bg-card transition-all duration-300 ${hoveredStat === 99 ? "opacity-100 translate-y-0 mt-2" : "opacity-60 translate-y-0 mt-2 group-hover:opacity-100"}`}>
+                        💡 <span className="font-semibold">Why?</span> PET is safe at room temp but BPA leaches when heated. Never microwave.
                       </div>
                     </div>
-                    {/* spacer when hazard tip is hidden vs shown - keep layout stable, tip is absolute so no shift */}
-                    <div className="h-0" aria-hidden />
                   </div>
 
                   {/* bottom chips - interactive */}
@@ -345,29 +344,31 @@ export default function App() {
                       </div>
                     ))}
                   </div>
-                  <div className={`text-center text-[11px] text-muted-foreground transition-all duration-300 ${mockHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>{mockHovered ? "✨ Hover the cards above — they come alive" : ""}</div>
+                  <div className="relative h-4 mt-1">
+                    <div className={`absolute inset-0 flex items-center justify-center text-[11px] text-muted-foreground transition-all duration-300 ${mockHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1 pointer-events-none"}`}>✨ Hover the cards above — they come alive</div>
+                  </div>
                 </div>
               </div>
 
-              {/* floating badges - now interactive with tooltips */}
+              {/* floating badges - 2D only, fixed outside, no overlap */}
               <div
-                className={`absolute -left-2 top-14 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-500 dark:bg-card sm:flex ${mockHovered ? "scale-105 shadow-2xl -translate-y-1" : "scale-100"} hover:scale-110 hover:shadow-2xl cursor-pointer group`}
+                className={`absolute -left-4 top-6 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card sm:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group`}
                 onMouseEnter={() => setHoveredStat(20)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
-                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 20 ? "bg-violet-600 text-white scale-110 rotate-6" : "bg-violet-100 dark:bg-violet-900/30 text-violet-600"}`}><Bot className="size-4" /></span>
-                <span className="text-xs font-bold leading-none">Gemini Vision<br /><span className={`text-[11px] font-medium transition-colors ${hoveredStat === 20 ? "text-violet-600" : "text-violet-600"}`}>Live AI</span></span>
-                <span className={`pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 20 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>Powered by Gemini 3.6 Flash</span>
-                <span className={`absolute -top-1 -right-1 size-2 rounded-full bg-emerald-500 transition-all ${hoveredStat === 20 ? "animate-ping" : "animate-pulse"}`} />
+                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 20 ? "bg-violet-600 text-white scale-105" : "bg-violet-100 dark:bg-violet-900/30 text-violet-600"}`}><Bot className="size-4" /></span>
+                <span className="text-xs font-bold leading-none">Gemini Vision<br /><span className="text-[11px] font-medium text-violet-600">Live AI</span></span>
+                <span className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 20 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>Powered by Gemini 3.6 Flash</span>
+                <span className={`absolute -top-1 -right-1 size-2 rounded-full bg-emerald-500 ${hoveredStat === 20 ? "animate-ping" : "animate-pulse"}`} />
               </div>
               <div
-                className={`absolute -right-2 bottom-14 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-500 dark:bg-card sm:flex ${mockHovered ? "scale-105 shadow-2xl translate-y-1" : "scale-100"} hover:scale-110 hover:shadow-2xl cursor-pointer group`}
+                className={`absolute -right-4 bottom-6 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card sm:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group`}
                 onMouseEnter={() => setHoveredStat(21)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
-                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 21 ? "bg-emerald-600 text-white scale-110 -rotate-6" : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600"}`}><Package className="size-4" /></span>
+                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 21 ? "bg-emerald-600 text-white scale-105" : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600"}`}><Package className="size-4" /></span>
                 <span className="text-xs font-bold leading-none">Tauri Native<br /><span className="text-[11px] font-medium text-emerald-600">Offline shell</span></span>
-                <span className={`pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 21 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}>Rust + Tauri v2 — zero browser</span>
+                <span className={`pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 21 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}>Rust + Tauri v2 — zero browser</span>
               </div>
 
               {/* sparkles on hover */}
