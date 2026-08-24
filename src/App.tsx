@@ -75,9 +75,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FCFCF9] dark:bg-[#0A0A0B] text-zinc-900 dark:text-zinc-100 overflow-x-clip selection:bg-primary/20">
-      {/* NAV - fixed so it NEVER leaves viewport, links always in view */}
+      {/* NAV - milky greyish transparent */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-2xl transition-all duration-300 ${scrolled ? "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-[0_4px_20px_rgba(0,0,0,0.06)]" : "border-zinc-200/60 dark:border-zinc-800/60 bg-[#FCFCF9]/80 dark:bg-[#0A0A0B]/80"}`}
+        className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-xl supports-[backdrop-filter]:backdrop-blur-2xl transition-all duration-300 ${scrolled ? "border-white/20 dark:border-white/10 bg-white/60 dark:bg-zinc-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.08)] backdrop-saturate-150" : "border-zinc-200/40 dark:border-zinc-800/40 bg-white/40 dark:bg-zinc-900/20 backdrop-saturate-150"}`}
       >
         <div className="mx-auto flex h-[68px] max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
