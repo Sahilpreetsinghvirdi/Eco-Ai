@@ -351,9 +351,9 @@ export default function App() {
                 </div>
               </div>
 
-              {/* floating badges - outside the main box corners */}
+              {/* floating badges - fully outside corners, gap, not touching */}
               <div
-                className={`absolute -left-5 -top-3 sm:-left-6 sm:-top-4 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card lg:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group z-20`}
+                className={`absolute bottom-full mb-3 sm:mb-4 right-full mr-3 sm:mr-4 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card lg:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group z-20`}
                 onMouseEnter={() => setHoveredStat(20)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
@@ -363,7 +363,7 @@ export default function App() {
                 <span className={`absolute -top-1 -right-1 size-2 rounded-full bg-emerald-500 ${hoveredStat === 20 ? "animate-ping" : "animate-pulse"}`} />
               </div>
               <div
-                className={`absolute -right-5 -bottom-3 sm:-right-6 sm:-bottom-4 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card lg:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group z-20`}
+                className={`absolute top-full mt-3 sm:mt-4 left-full ml-3 sm:ml-4 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card lg:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group z-20`}
                 onMouseEnter={() => setHoveredStat(21)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
