@@ -351,27 +351,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* floating badges - fully outside corners, gap, not touching */}
-              <div
-                className={`absolute bottom-full mb-3 sm:mb-4 right-full mr-3 sm:mr-4 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card lg:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group z-20`}
-                onMouseEnter={() => setHoveredStat(20)}
-                onMouseLeave={() => setHoveredStat(null)}
-              >
-                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 20 ? "bg-violet-600 text-white scale-105" : "bg-violet-100 dark:bg-violet-900/30 text-violet-600"}`}><Bot className="size-4" /></span>
-                <span className="text-xs font-bold leading-none">Gemini Vision<br /><span className="text-[11px] font-medium text-violet-600">Live AI</span></span>
-                <span className={`pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 20 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>Powered by Gemini 3.6 Flash</span>
-                <span className={`absolute -top-1 -right-1 size-2 rounded-full bg-emerald-500 ${hoveredStat === 20 ? "animate-ping" : "animate-pulse"}`} />
-              </div>
-              <div
-                className={`absolute top-full mt-3 sm:mt-4 left-full ml-3 sm:ml-4 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card lg:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group z-20`}
-                onMouseEnter={() => setHoveredStat(21)}
-                onMouseLeave={() => setHoveredStat(null)}
-              >
-                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 21 ? "bg-emerald-600 text-white scale-105" : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600"}`}><Package className="size-4" /></span>
-                <span className="text-xs font-bold leading-none">Tauri Native<br /><span className="text-[11px] font-medium text-emerald-600">Offline shell</span></span>
-                <span className={`pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 21 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}>Rust + Tauri v2 — zero browser</span>
-              </div>
-
               {/* sparkles on hover */}
               <div className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${mockHovered ? "opacity-100" : "opacity-0"}`}>
                 <span className="absolute right-6 top-6 animate-pulse text-primary">✦</span>
