@@ -60,17 +60,23 @@ export default function App() {
       setScrolled(window.scrollY > 8)
       if (jumpingRef.current) return
       const ids = ["home", "work", "features", "download", "about"]
-      const y = window.scrollY + 120
+      // use viewport center + "last passed" logic so short Download stays active longer
+      const y = window.scrollY + window.innerHeight * 0.5
+      let current = "home"
       for (const id of ids) {
         const el = document.getElementById(id)
-        if (el && y >= el.offsetTop && y < el.offsetTop + el.offsetHeight) {
-          setActive(id)
-          break
+        if (el && y >= el.offsetTop - 100) {
+          current = id
         }
       }
+      // if scrolled to bottom, force About
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 40) {
+        current = "about"
+      }
+      setActive(current)
     }
     onScroll()
-    addEventListener("scroll", onScroll)
+    addEventListener("scroll", onScroll, { passive: true })
     return () => removeEventListener("scroll", onScroll)
   }, [])
 
@@ -659,8 +665,8 @@ export default function App() {
         </div>
       </section>
 
-      {/* DOWNLOAD */}
-      <section id="download" className="py-10 sm:py-16">
+      {/* DOWNLOAD - give it more page space so nav highlight lingers */}
+      <section id="download" className="py-16 sm:py-20 lg:py-24 scroll-mt-[80px]">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-7">
