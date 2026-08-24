@@ -234,9 +234,9 @@ export default function App() {
               />
               <div className={`pointer-events-none absolute -inset-3 rounded-[32px] bg-gradient-to-br from-primary/20 to-emerald-500/20 blur-2xl transition-opacity duration-500 ${mockHovered ? "opacity-50" : "opacity-0"}`} />
 
-              {/* main card - fixed, only 2D transforms */}
+              {/* main card - fixed, only 2D transforms - NO layout shift */}
               <div
-                className={`relative overflow-hidden rounded-[28px] border bg-card shadow-2xl transition-all duration-300 will-change-transform ${mockHovered ? "shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)] -translate-y-1 scale-[1.01]" : "shadow-xl translate-y-0 scale-100"}`}
+                className={`relative overflow-hidden rounded-[28px] border bg-card shadow-2xl transition-all duration-300 will-change-transform isolate ${mockHovered ? "shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)] scale-[1.01]" : "shadow-xl scale-100"}`}
               >
                 {/* top shimmer on hover */}
                 <div className={`pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-700 ${mockHovered ? "translate-x-[100%] opacity-100" : "-translate-x-[100%] opacity-0"}`} style={{ transform: mockHovered ? "translateX(0)" : "translateX(-100%)" }} />
@@ -305,23 +305,31 @@ export default function App() {
                           key={i}
                           onMouseEnter={() => setHoveredStat(i)}
                           onMouseLeave={() => setHoveredStat(null)}
-                          className={`group relative rounded-2xl border p-3 text-center transition-all duration-300 cursor-pointer will-change-transform ${hoveredStat === i ? `${stat.hoverColor} scale-[1.07] -translate-y-1 shadow-lg ${stat.glow} z-10` : hoveredStat !== null ? "scale-[0.96] opacity-60" : "bg-white dark:bg-card hover:shadow-md hover:scale-[1.03] hover:-translate-y-0.5"} ${mockHovered && hoveredStat === null ? "hover:border-primary/20" : ""}`}
+                          className={`group relative flex flex-col items-center justify-center rounded-2xl border p-3 text-center transition-[transform,box-shadow,border-color,background-color] duration-300 cursor-pointer will-change-transform h-[88px] overflow-visible isolate ${hoveredStat === i ? `${stat.hoverColor} scale-[1.04] shadow-md ${stat.glow} z-10` : "bg-white dark:bg-card hover:shadow-sm hover:scale-[1.02]"} `}
                         >
-                          <div className={`mx-auto flex size-8 items-center justify-center rounded-xl text-white text-xs transition-all duration-300 ${stat.iconBg} ${hoveredStat === i ? "scale-110 rotate-6 shadow-lg" : "group-hover:scale-105 group-hover:rotate-3"}`}>{stat.icon}</div>
-                          <div className={`mt-1.5 text-sm font-extrabold transition-all duration-300 ${hoveredStat === i ? "scale-105 text-primary" : ""}`}>{stat.label}</div>
-                          <div className="text-[11px] text-muted-foreground">{stat.sub}</div>
-                          <div className={`overflow-hidden text-[10px] font-medium text-primary transition-all duration-300 ${hoveredStat === i ? "max-h-6 opacity-100 mt-1" : "max-h-0 opacity-0"}`}>{stat.detail}</div>
-                          {hoveredStat === i && <div className="pointer-events-none absolute -top-1 -right-1 size-2 rounded-full bg-primary animate-ping" />}
+                          <div className={`mx-auto flex size-8 items-center justify-center rounded-xl text-white text-xs transition-all duration-300 ${stat.iconBg} ${hoveredStat === i ? "scale-105 shadow" : "group-hover:scale-105"}`}>{stat.icon}</div>
+                          <div className={`mt-1.5 text-sm font-extrabold leading-none transition-colors duration-300 ${hoveredStat === i ? "text-primary" : ""}`}>{stat.label}</div>
+                          <div className="text-[11px] leading-none text-muted-foreground mt-1">{stat.sub}</div>
+                          {/* fixed placeholder - no layout shift, just crossfade */}
+                          <div className="relative mt-1 h-3 w-full flex items-center justify-center">
+                            <span className={`absolute text-[10px] font-medium text-primary transition-all duration-300 ${hoveredStat === i ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1 pointer-events-none"}`}>{stat.detail}</span>
+                            <span className={`absolute text-[10px] text-muted-foreground transition-all duration-300 ${hoveredStat === i ? "opacity-0 -translate-y-1" : "opacity-0"}`}> </span>
+                          </div>
                         </div>
                       ))}
                     </div>
 
-                    {/* hazard card - interactive */}
-                    <div className={`group rounded-2xl border p-3 transition-all duration-300 cursor-pointer ${hoveredStat === 99 ? "border-amber-300 bg-amber-100/70 shadow-md scale-[1.02] dark:bg-amber-900/30" : "bg-amber-50/70 dark:bg-amber-950/20 hover:border-amber-200 hover:shadow-sm hover:scale-[1.01]"}`} onMouseEnter={() => setHoveredStat(99)} onMouseLeave={() => setHoveredStat(null)}>
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300"><TriangleAlert className={`size-3.5 transition-all duration-300 ${hoveredStat === 99 ? "rotate-12 scale-110 text-amber-600" : "group-hover:rotate-6"}`} /> Low hazard • BPA trace <span className={`ml-auto rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white transition-all duration-300 ${hoveredStat === 99 ? "scale-105 shadow" : "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"}`}>Tap to learn</span></div>
+                    {/* hazard card - interactive - 2D only, tip overlays without pushing layout */}
+                    <div className={`group relative rounded-2xl border p-3 transition-[transform,box-shadow,border-color] duration-300 cursor-pointer isolate ${hoveredStat === 99 ? "border-amber-300 bg-amber-100/70 shadow-sm dark:bg-amber-900/30" : "bg-amber-50/70 dark:bg-amber-950/20 hover:border-amber-200 hover:shadow-sm"}`} onMouseEnter={() => setHoveredStat(99)} onMouseLeave={() => setHoveredStat(null)}>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300"><TriangleAlert className={`size-3.5 transition-transform duration-300 ${hoveredStat === 99 ? "scale-105 text-amber-600" : "group-hover:scale-105"}`} /> Low hazard • BPA trace <span className={`ml-auto rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white transition-all duration-300 ${hoveredStat === 99 ? "opacity-100 scale-100" : "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"}`}>Tap to learn</span></div>
                       <div className="mt-1 text-[11px] leading-relaxed text-amber-800/80 dark:text-amber-100/70">Rinse & flatten. Dispose in blue bin — Kabadiwala / MRF accepts PET at ₹12–14/kg.</div>
-                      <div className={`grid transition-all duration-300 ${hoveredStat === 99 ? "grid-rows-[1fr] opacity-100 mt-2" : "grid-rows-[0fr] opacity-0"}`}><div className="overflow-hidden"><div className="rounded-xl bg-white p-2.5 text-[11px] leading-relaxed dark:bg-card border">💡 <span className="font-semibold">Why?</span> PET is safe at room temp but BPA leaches when heated. Never microwave this bottle. Reuse as storage, not for hot liquids.</div></div></div>
+                      {/* tip overlays absolutely - does NOT change card height */}
+                      <div className={`pointer-events-none absolute left-2 right-2 top-full z-20 mt-2 transition-all duration-300 ${hoveredStat === 99 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none"}`}>
+                        <div className="rounded-xl bg-white p-2.5 text-[11px] leading-relaxed dark:bg-card border shadow-lg">💡 <span className="font-semibold">Why?</span> PET is safe at room temp but BPA leaches when heated. Never microwave this bottle. Reuse as storage, not for hot liquids.</div>
+                      </div>
                     </div>
+                    {/* spacer when hazard tip is hidden vs shown - keep layout stable, tip is absolute so no shift */}
+                    <div className="h-0" aria-hidden />
                   </div>
 
                   {/* bottom chips - interactive */}
