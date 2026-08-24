@@ -164,9 +164,9 @@ export default function App() {
           <div className="absolute top-[30%] left-[-10%] size-[420px] rounded-full bg-emerald-300/10 blur-[90px] dark:bg-emerald-900/15" />
         </div>
 
-        <div className="mx-auto grid max-w-[1200px] gap-10 px-4 py-8 sm:px-6 md:grid-cols-2 md:gap-8 md:py-14 lg:py-16 items-start">
+        <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-8 sm:px-6 lg:grid-cols-2 lg:gap-10 lg:py-16 items-start">
           {/* Left */}
-          <div className="flex flex-col justify-start pt-2">
+          <div className="flex flex-col justify-start pt-2 min-w-0">
             <Badge variant="secondary" className="mb-4 w-fit gap-2 rounded-full border bg-white px-3 py-1.5 text-[11px] font-bold tracking-[0.08em] shadow-sm dark:bg-card">
               <span className="flex size-5 items-center justify-center rounded-full bg-primary text-[11px] text-white"><Award className="size-3" /></span>
               INDIAN SCIENCE CONGRESS 2026 • OFFICIAL ENTRY
@@ -221,10 +221,10 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right visual - App mockup - INTERACTIVE 2D */}
-          <div className="relative flex items-center justify-center">
+          {/* Right visual - App mockup - INTERACTIVE 2D - responsive, never out of window */}
+          <div className="relative flex items-center justify-center min-w-0 w-full lg:justify-end lg:pl-4">
             <div
-              className="relative w-full max-w-[560px]"
+              className="relative w-full max-w-[360px] sm:max-w-[480px] lg:max-w-[480px] xl:max-w-[560px] mx-auto lg:mx-0 shrink-0"
               onMouseEnter={() => setMockHovered(true)}
               onMouseLeave={() => setMockHovered(false)}
             >
@@ -350,9 +350,9 @@ export default function App() {
                 </div>
               </div>
 
-              {/* floating badges - 2D only, fixed outside, no overlap */}
+              {/* floating badges - 2D only, fixed outside, no overlap - hidden until xl to avoid window clip */}
               <div
-                className={`absolute -left-4 top-6 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card sm:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group`}
+                className={`absolute -left-4 top-6 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card xl:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group`}
                 onMouseEnter={() => setHoveredStat(20)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
@@ -362,7 +362,7 @@ export default function App() {
                 <span className={`absolute -top-1 -right-1 size-2 rounded-full bg-emerald-500 ${hoveredStat === 20 ? "animate-ping" : "animate-pulse"}`} />
               </div>
               <div
-                className={`absolute -right-4 bottom-6 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card sm:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group`}
+                className={`absolute -right-4 bottom-6 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-300 dark:bg-card xl:flex ${mockHovered ? "scale-[1.02] shadow-xl" : "scale-100"} hover:scale-105 hover:shadow-xl cursor-pointer group`}
                 onMouseEnter={() => setHoveredStat(21)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
