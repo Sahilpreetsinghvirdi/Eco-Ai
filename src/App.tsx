@@ -54,7 +54,6 @@ export default function App() {
   const [hoveredStat, setHoveredStat] = useState<number | null>(null)
   const [mockHovered, setMockHovered] = useState(false)
   const [progressHovered, setProgressHovered] = useState(false)
-  const [tilt, setTilt] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     if (dark) document.documentElement.classList.add("dark")
@@ -222,35 +221,22 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right visual - App mockup - INTERACTIVE */}
+          {/* Right visual - App mockup - INTERACTIVE 2D */}
           <div className="relative flex items-center justify-center">
             <div
               className="relative w-full max-w-[560px]"
               onMouseEnter={() => setMockHovered(true)}
-              onMouseLeave={() => {
-                setMockHovered(false)
-                setTilt({ x: 0, y: 0 })
-              }}
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect()
-                const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14
-                const y = ((e.clientY - rect.top) / rect.height - 0.5) * -10
-                setTilt({ x: y, y: x })
-              }}
+              onMouseLeave={() => setMockHovered(false)}
             >
-              {/* glow that intensifies on hover */}
+              {/* glow that intensifies on hover - 2D only */}
               <div
-                className={`pointer-events-none absolute inset-0 rounded-[28px] bg-gradient-to-br from-primary/15 via-emerald-200/15 to-teal-200/15 blur-[1px] transition-all duration-500 dark:from-primary/10 ${mockHovered ? "scale-[1.02] opacity-100 -rotate-1" : "-rotate-1 opacity-80"}`}
+                className={`pointer-events-none absolute inset-0 rounded-[28px] bg-gradient-to-br from-primary/15 via-emerald-200/15 to-teal-200/15 blur-[1px] transition-all duration-500 dark:from-primary/10 ${mockHovered ? "scale-[1.015] opacity-100" : "scale-100 opacity-80"}`}
               />
-              <div className={`pointer-events-none absolute -inset-3 rounded-[32px] bg-gradient-to-br from-primary/20 to-emerald-500/20 blur-2xl transition-opacity duration-500 ${mockHovered ? "opacity-60" : "opacity-0"}`} />
+              <div className={`pointer-events-none absolute -inset-3 rounded-[32px] bg-gradient-to-br from-primary/20 to-emerald-500/20 blur-2xl transition-opacity duration-500 ${mockHovered ? "opacity-50" : "opacity-0"}`} />
 
-              {/* main card with tilt */}
+              {/* main card - fixed, only 2D transforms */}
               <div
-                className={`relative overflow-hidden rounded-[28px] border bg-card shadow-2xl transition-all duration-300 will-change-transform ${mockHovered ? "shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]" : "shadow-xl"}`}
-                style={{
-                  transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) ${mockHovered ? "scale(1.015)" : "scale(1)"}`,
-                  transformStyle: "preserve-3d",
-                }}
+                className={`relative overflow-hidden rounded-[28px] border bg-card shadow-2xl transition-all duration-300 will-change-transform ${mockHovered ? "shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)] -translate-y-1 scale-[1.01]" : "shadow-xl translate-y-0 scale-100"}`}
               >
                 {/* top shimmer on hover */}
                 <div className={`pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-700 ${mockHovered ? "translate-x-[100%] opacity-100" : "-translate-x-[100%] opacity-0"}`} style={{ transform: mockHovered ? "translateX(0)" : "translateX(-100%)" }} />
@@ -319,11 +305,10 @@ export default function App() {
                           key={i}
                           onMouseEnter={() => setHoveredStat(i)}
                           onMouseLeave={() => setHoveredStat(null)}
-                          className={`group relative rounded-2xl border p-3 text-center transition-all duration-300 cursor-pointer ${hoveredStat === i ? `${stat.hoverColor} scale-[1.06] shadow-lg ${stat.glow} z-10` : hoveredStat !== null ? "scale-[0.96] opacity-70" : "bg-white dark:bg-card hover:shadow-md hover:scale-[1.02]"} ${mockHovered && hoveredStat === null ? "hover:border-primary/20" : ""}`}
-                          style={{ transformStyle: "preserve-3d", transform: hoveredStat === i ? "translateZ(20px)" : "translateZ(0)" }}
+                          className={`group relative rounded-2xl border p-3 text-center transition-all duration-300 cursor-pointer will-change-transform ${hoveredStat === i ? `${stat.hoverColor} scale-[1.07] -translate-y-1 shadow-lg ${stat.glow} z-10` : hoveredStat !== null ? "scale-[0.96] opacity-60" : "bg-white dark:bg-card hover:shadow-md hover:scale-[1.03] hover:-translate-y-0.5"} ${mockHovered && hoveredStat === null ? "hover:border-primary/20" : ""}`}
                         >
-                          <div className={`mx-auto flex size-8 items-center justify-center rounded-xl text-white text-xs transition-all duration-300 ${stat.iconBg} ${hoveredStat === i ? "scale-110 rotate-6 shadow-lg" : "group-hover:scale-105"}`}>{stat.icon}</div>
-                          <div className={`mt-1.5 text-sm font-extrabold transition-all duration-300 ${hoveredStat === i ? "scale-110 text-primary" : ""}`}>{stat.label}</div>
+                          <div className={`mx-auto flex size-8 items-center justify-center rounded-xl text-white text-xs transition-all duration-300 ${stat.iconBg} ${hoveredStat === i ? "scale-110 rotate-6 shadow-lg" : "group-hover:scale-105 group-hover:rotate-3"}`}>{stat.icon}</div>
+                          <div className={`mt-1.5 text-sm font-extrabold transition-all duration-300 ${hoveredStat === i ? "scale-105 text-primary" : ""}`}>{stat.label}</div>
                           <div className="text-[11px] text-muted-foreground">{stat.sub}</div>
                           <div className={`overflow-hidden text-[10px] font-medium text-primary transition-all duration-300 ${hoveredStat === i ? "max-h-6 opacity-100 mt-1" : "max-h-0 opacity-0"}`}>{stat.detail}</div>
                           {hoveredStat === i && <div className="pointer-events-none absolute -top-1 -right-1 size-2 rounded-full bg-primary animate-ping" />}
