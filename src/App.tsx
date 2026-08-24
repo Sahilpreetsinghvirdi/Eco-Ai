@@ -51,6 +51,10 @@ export default function App() {
   const [dark, setDark] = useState(false)
   const [activeNav, setActiveNav] = useState("home")
   const [mobileMenu, setMobileMenu] = useState(false)
+  const [hoveredStat, setHoveredStat] = useState<number | null>(null)
+  const [mockHovered, setMockHovered] = useState(false)
+  const [progressHovered, setProgressHovered] = useState(false)
+  const [tilt, setTilt] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     if (dark) document.documentElement.classList.add("dark")
@@ -218,97 +222,166 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right visual - App mockup */}
+          {/* Right visual - App mockup - INTERACTIVE */}
           <div className="relative flex items-center justify-center">
-            <div className="relative w-full max-w-[560px]">
-              <div className="absolute inset-0 -rotate-1 rounded-[28px] bg-gradient-to-br from-primary/15 via-emerald-200/15 to-teal-200/15 blur-[1px] dark:from-primary/10" />
-              <div className="relative overflow-hidden rounded-[28px] border bg-card shadow-2xl">
-                {/* window chrome */}
+            <div
+              className="relative w-full max-w-[560px]"
+              onMouseEnter={() => setMockHovered(true)}
+              onMouseLeave={() => {
+                setMockHovered(false)
+                setTilt({ x: 0, y: 0 })
+              }}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14
+                const y = ((e.clientY - rect.top) / rect.height - 0.5) * -10
+                setTilt({ x: y, y: x })
+              }}
+            >
+              {/* glow that intensifies on hover */}
+              <div
+                className={`pointer-events-none absolute inset-0 rounded-[28px] bg-gradient-to-br from-primary/15 via-emerald-200/15 to-teal-200/15 blur-[1px] transition-all duration-500 dark:from-primary/10 ${mockHovered ? "scale-[1.02] opacity-100 -rotate-1" : "-rotate-1 opacity-80"}`}
+              />
+              <div className={`pointer-events-none absolute -inset-3 rounded-[32px] bg-gradient-to-br from-primary/20 to-emerald-500/20 blur-2xl transition-opacity duration-500 ${mockHovered ? "opacity-60" : "opacity-0"}`} />
+
+              {/* main card with tilt */}
+              <div
+                className={`relative overflow-hidden rounded-[28px] border bg-card shadow-2xl transition-all duration-300 will-change-transform ${mockHovered ? "shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]" : "shadow-xl"}`}
+                style={{
+                  transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) ${mockHovered ? "scale(1.015)" : "scale(1)"}`,
+                  transformStyle: "preserve-3d",
+                }}
+              >
+                {/* top shimmer on hover */}
+                <div className={`pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-700 ${mockHovered ? "translate-x-[100%] opacity-100" : "-translate-x-[100%] opacity-0"}`} style={{ transform: mockHovered ? "translateX(0)" : "translateX(-100%)" }} />
+
+                {/* window chrome - interactive dots */}
                 <div className="flex items-center justify-between border-b bg-muted/40 px-4 py-3">
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1.5">
-                      <span className="size-3 rounded-full bg-red-400" />
-                      <span className="size-3 rounded-full bg-yellow-400" />
-                      <span className="size-3 rounded-full bg-emerald-400" />
+                      <span className={`size-3 rounded-full bg-red-400 transition-all duration-300 ${mockHovered ? "scale-110 shadow-[0_0_8px_rgba(248,113,113,0.6)]" : ""}`} />
+                      <span className={`size-3 rounded-full bg-yellow-400 transition-all duration-300 delay-75 ${mockHovered ? "scale-110 shadow-[0_0_8px_rgba(251,191,36,0.6)]" : ""}`} />
+                      <span className={`size-3 rounded-full bg-emerald-400 transition-all duration-300 delay-100 ${mockHovered ? "scale-110 shadow-[0_0_8px_rgba(52,211,153,0.6)]" : ""}`} />
                     </div>
-                    <span className="ml-2 hidden items-center gap-1.5 text-xs font-semibold sm:inline-flex"><Leaf className="size-3.5 text-primary" /> Sustainability Hub</span>
+                    <span className="ml-2 hidden items-center gap-1.5 text-xs font-semibold sm:inline-flex"><Leaf className={`size-3.5 text-primary transition-transform duration-500 ${mockHovered ? "rotate-12 scale-110" : ""}`} /> Sustainability Hub</span>
                   </div>
-                  <Badge className="rounded-full bg-emerald-500 px-2.5 py-0 text-[11px]"><span className="size-1.5 rounded-full bg-white animate-pulse" /> Online • Gemini Live</Badge>
+                  <Badge className={`rounded-full bg-emerald-500 px-2.5 py-0 text-[11px] transition-all duration-300 ${mockHovered ? "scale-105 shadow-md" : ""}`}><span className="size-1.5 rounded-full bg-white animate-pulse" /> Online • Gemini Live</Badge>
                 </div>
 
                 {/* mock header */}
                 <div className="p-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm font-bold">
-                      <span className="flex size-8 items-center justify-center rounded-xl bg-primary text-white"><ScanSearch className="size-4" /></span>
+                      <span className={`flex size-8 items-center justify-center rounded-xl bg-primary text-white transition-all duration-500 ${mockHovered ? "rotate-6 scale-110 shadow-lg shadow-primary/25" : ""}`}><ScanSearch className={`size-4 transition-transform duration-500 ${mockHovered ? "scale-110" : ""}`} /></span>
                       AI Waste Analyzer
                     </div>
-                    <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary">ISC 2026</span>
+                    <span className={`rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-bold text-primary transition-all duration-300 ${mockHovered ? "bg-primary text-white scale-105" : ""}`}>ISC 2026</span>
                   </div>
 
-                  {/* fake upload + result */}
+                  {/* fake upload + result - progress area is hover-sensitive */}
                   <div className="mt-4 grid gap-3">
-                    <div className="rounded-2xl border bg-muted/30 p-3">
+                    <div
+                      className={`rounded-2xl border p-3 transition-all duration-300 ${progressHovered ? "border-primary/30 bg-primary/5 shadow-md" : "bg-muted/30"}`}
+                      onMouseEnter={() => setProgressHovered(true)}
+                      onMouseLeave={() => setProgressHovered(false)}
+                    >
                       <div className="flex gap-3">
-                        <div className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-zinc-200 to-zinc-100 text-2xl dark:from-zinc-800 dark:to-zinc-700">🗑️</div>
+                        <div className={`flex size-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-zinc-200 to-zinc-100 text-2xl transition-all duration-500 dark:from-zinc-800 dark:to-zinc-700 ${mockHovered ? "scale-105 shadow-md" : ""} ${progressHovered ? "rotate-3" : ""}`}>🗑️</div>
                         <div className="min-w-0 flex-1">
-                          <div className="h-2 w-3/4 rounded bg-primary/20" />
-                          <div className="mt-2 h-2 w-1/2 rounded bg-muted" />
+                          <div className={`h-2 w-3/4 rounded transition-all duration-500 ${progressHovered ? "bg-primary/30 w-[85%]" : "bg-primary/20"}`} />
+                          <div className={`mt-2 h-2 rounded transition-all duration-500 delay-75 ${progressHovered ? "w-[65%] bg-primary/20" : "w-1/2 bg-muted"}`} />
                           <div className="mt-3 flex gap-1.5">
-                            <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-white">Analyzing…</span>
-                            <span className="rounded-full border bg-white px-2 py-0.5 text-[10px] dark:bg-card">82% PET • 12% HDPE</span>
+                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold text-white transition-all duration-300 ${progressHovered ? "bg-emerald-600 scale-105 shadow" : "bg-primary"}`}>{progressHovered ? "✓ Complete" : "Analyzing…"}</span>
+                            <span className={`rounded-full border px-2 py-0.5 text-[10px] transition-all duration-300 ${progressHovered ? "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 scale-105" : "bg-white dark:bg-card"}`}>82% PET • 12% HDPE</span>
                           </div>
                         </div>
                       </div>
                       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted">
-                        <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-primary to-emerald-500" />
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-primary to-emerald-500 transition-all duration-700 ease-out"
+                          style={{ width: progressHovered ? "100%" : mockHovered ? "88%" : "78%" }}
+                        />
                       </div>
                       <div className="mt-1.5 flex justify-between text-[11px] text-muted-foreground">
-                        <span>Gemini 3.6 Flash • 10s</span>
-                        <span>78% complete</span>
+                        <span className={progressHovered ? "text-primary font-medium" : ""}>Gemini 3.6 Flash • 10s</span>
+                        <span className={progressHovered ? "text-emerald-600 font-bold" : ""}>{progressHovered ? "100% complete ✓" : mockHovered ? "88% complete" : "78% complete"}</span>
                       </div>
                     </div>
 
+                    {/* Interactive stat cards */}
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="rounded-2xl border bg-white p-3 text-center dark:bg-card">
-                        <div className="mx-auto flex size-8 items-center justify-center rounded-xl bg-sky-500 text-white text-xs">PET</div>
-                        <div className="mt-1.5 text-sm font-extrabold">62%</div>
-                        <div className="text-[11px] text-muted-foreground">Plastic</div>
-                      </div>
-                      <div className="rounded-2xl border bg-white p-3 text-center dark:bg-card">
-                        <div className="mx-auto flex size-8 items-center justify-center rounded-xl bg-amber-500 text-white"><Apple className="size-4" /></div>
-                        <div className="mt-1.5 text-sm font-extrabold">23%</div>
-                        <div className="text-[11px] text-muted-foreground">Organic</div>
-                      </div>
-                      <div className="rounded-2xl border bg-white p-3 text-center dark:bg-card">
-                        <div className="mx-auto flex size-8 items-center justify-center rounded-xl bg-emerald-500 text-white"><Recycle className="size-4" /></div>
-                        <div className="mt-1.5 text-sm font-extrabold">15%</div>
-                        <div className="text-[11px] text-muted-foreground">Recyclable</div>
-                      </div>
+                      {[
+                        { label: "62%", sub: "Plastic", detail: "0.05kg CO₂ saved", iconBg: "bg-sky-500", icon: "PET", hoverColor: "border-sky-300 bg-sky-50 dark:bg-sky-950/20", glow: "shadow-sky-500/20" },
+                        { label: "23%", sub: "Organic", detail: "Compost in 14d", iconBg: "bg-amber-500", icon: <Apple className="size-4" />, hoverColor: "border-amber-300 bg-amber-50 dark:bg-amber-950/20", glow: "shadow-amber-500/20" },
+                        { label: "15%", sub: "Recyclable", detail: "→ MRF ₹12/kg", iconBg: "bg-emerald-500", icon: <Recycle className="size-4" />, hoverColor: "border-emerald-300 bg-emerald-50 dark:bg-emerald-950/20", glow: "shadow-emerald-500/20" },
+                      ].map((stat, i) => (
+                        <div
+                          key={i}
+                          onMouseEnter={() => setHoveredStat(i)}
+                          onMouseLeave={() => setHoveredStat(null)}
+                          className={`group relative rounded-2xl border p-3 text-center transition-all duration-300 cursor-pointer ${hoveredStat === i ? `${stat.hoverColor} scale-[1.06] shadow-lg ${stat.glow} z-10` : hoveredStat !== null ? "scale-[0.96] opacity-70" : "bg-white dark:bg-card hover:shadow-md hover:scale-[1.02]"} ${mockHovered && hoveredStat === null ? "hover:border-primary/20" : ""}`}
+                          style={{ transformStyle: "preserve-3d", transform: hoveredStat === i ? "translateZ(20px)" : "translateZ(0)" }}
+                        >
+                          <div className={`mx-auto flex size-8 items-center justify-center rounded-xl text-white text-xs transition-all duration-300 ${stat.iconBg} ${hoveredStat === i ? "scale-110 rotate-6 shadow-lg" : "group-hover:scale-105"}`}>{stat.icon}</div>
+                          <div className={`mt-1.5 text-sm font-extrabold transition-all duration-300 ${hoveredStat === i ? "scale-110 text-primary" : ""}`}>{stat.label}</div>
+                          <div className="text-[11px] text-muted-foreground">{stat.sub}</div>
+                          <div className={`overflow-hidden text-[10px] font-medium text-primary transition-all duration-300 ${hoveredStat === i ? "max-h-6 opacity-100 mt-1" : "max-h-0 opacity-0"}`}>{stat.detail}</div>
+                          {hoveredStat === i && <div className="pointer-events-none absolute -top-1 -right-1 size-2 rounded-full bg-primary animate-ping" />}
+                        </div>
+                      ))}
                     </div>
 
-                    <div className="rounded-2xl border bg-amber-50/70 p-3 dark:bg-amber-950/20">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300"><TriangleAlert className="size-3.5" /> Low hazard • BPA trace</div>
+                    {/* hazard card - interactive */}
+                    <div className={`group rounded-2xl border p-3 transition-all duration-300 cursor-pointer ${hoveredStat === 99 ? "border-amber-300 bg-amber-100/70 shadow-md scale-[1.02] dark:bg-amber-900/30" : "bg-amber-50/70 dark:bg-amber-950/20 hover:border-amber-200 hover:shadow-sm hover:scale-[1.01]"}`} onMouseEnter={() => setHoveredStat(99)} onMouseLeave={() => setHoveredStat(null)}>
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300"><TriangleAlert className={`size-3.5 transition-all duration-300 ${hoveredStat === 99 ? "rotate-12 scale-110 text-amber-600" : "group-hover:rotate-6"}`} /> Low hazard • BPA trace <span className={`ml-auto rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white transition-all duration-300 ${hoveredStat === 99 ? "scale-105 shadow" : "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"}`}>Tap to learn</span></div>
                       <div className="mt-1 text-[11px] leading-relaxed text-amber-800/80 dark:text-amber-100/70">Rinse & flatten. Dispose in blue bin — Kabadiwala / MRF accepts PET at ₹12–14/kg.</div>
+                      <div className={`grid transition-all duration-300 ${hoveredStat === 99 ? "grid-rows-[1fr] opacity-100 mt-2" : "grid-rows-[0fr] opacity-0"}`}><div className="overflow-hidden"><div className="rounded-xl bg-white p-2.5 text-[11px] leading-relaxed dark:bg-card border">💡 <span className="font-semibold">Why?</span> PET is safe at room temp but BPA leaches when heated. Never microwave this bottle. Reuse as storage, not for hot liquids.</div></div></div>
                     </div>
                   </div>
 
+                  {/* bottom chips - interactive */}
                   <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="rounded-2xl bg-primary/10 py-2.5 font-semibold text-primary"><div className="text-base font-extrabold leading-none">~10s</div> Live AI</div>
-                    <div className="rounded-2xl bg-emerald-500/10 py-2.5 font-semibold text-emerald-700 dark:text-emerald-400"><div className="text-base font-extrabold leading-none">.exe</div> Portable</div>
-                    <div className="rounded-2xl bg-zinc-900 py-2.5 font-semibold text-white dark:bg-zinc-800"><div className="text-base font-extrabold leading-none">.msi</div> Installer</div>
+                    {[
+                      { top: "~10s", bottom: "Live AI", base: "bg-primary/10 text-primary", hover: "bg-primary text-white shadow-lg shadow-primary/25 scale-105" },
+                      { top: ".exe", bottom: "Portable", base: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400", hover: "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 scale-105" },
+                      { top: ".msi", bottom: "Installer", base: "bg-zinc-900 text-white dark:bg-zinc-800", hover: "bg-zinc-700 dark:bg-zinc-700 shadow-lg scale-105" },
+                    ].map((chip, i) => (
+                      <div key={i} className={`group relative overflow-hidden rounded-2xl py-2.5 font-semibold transition-all duration-300 cursor-pointer ${hoveredStat === 10 + i ? chip.hover : chip.base} ${mockHovered ? "hover:scale-[1.03]" : ""}`} onMouseEnter={() => setHoveredStat(10 + i)} onMouseLeave={() => setHoveredStat(null)}>
+                        <div className="relative z-10"><div className="text-base font-extrabold leading-none">{chip.top}</div>{chip.bottom}</div>
+                        {hoveredStat === 10 + i && <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_0.8s_ease]" />}
+                      </div>
+                    ))}
                   </div>
+                  <div className={`text-center text-[11px] text-muted-foreground transition-all duration-300 ${mockHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>{mockHovered ? "✨ Hover the cards above — they come alive" : ""}</div>
                 </div>
               </div>
 
-              {/* floating badges */}
-              <div className="pointer-events-none absolute -left-2 top-14 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl dark:bg-card sm:flex">
-                <span className="flex size-8 items-center justify-center rounded-xl bg-violet-100 dark:bg-violet-900/30"><Bot className="size-4 text-violet-600" /></span>
-                <span className="text-xs font-bold leading-none">Gemini Vision<br /><span className="text-[11px] font-medium text-violet-600">Live AI</span></span>
+              {/* floating badges - now interactive with tooltips */}
+              <div
+                className={`absolute -left-2 top-14 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-500 dark:bg-card sm:flex ${mockHovered ? "scale-105 shadow-2xl -translate-y-1" : "scale-100"} hover:scale-110 hover:shadow-2xl cursor-pointer group`}
+                onMouseEnter={() => setHoveredStat(20)}
+                onMouseLeave={() => setHoveredStat(null)}
+              >
+                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 20 ? "bg-violet-600 text-white scale-110 rotate-6" : "bg-violet-100 dark:bg-violet-900/30 text-violet-600"}`}><Bot className="size-4" /></span>
+                <span className="text-xs font-bold leading-none">Gemini Vision<br /><span className={`text-[11px] font-medium transition-colors ${hoveredStat === 20 ? "text-violet-600" : "text-violet-600"}`}>Live AI</span></span>
+                <span className={`pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 20 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>Powered by Gemini 3.6 Flash</span>
+                <span className={`absolute -top-1 -right-1 size-2 rounded-full bg-emerald-500 transition-all ${hoveredStat === 20 ? "animate-ping" : "animate-pulse"}`} />
               </div>
-              <div className="pointer-events-none absolute -right-2 bottom-14 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl dark:bg-card sm:flex">
-                <span className="flex size-8 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30"><Package className="size-4 text-emerald-600" /></span>
+              <div
+                className={`absolute -right-2 bottom-14 hidden items-center gap-2 rounded-2xl border bg-white px-3 py-2 shadow-xl transition-all duration-500 dark:bg-card sm:flex ${mockHovered ? "scale-105 shadow-2xl translate-y-1" : "scale-100"} hover:scale-110 hover:shadow-2xl cursor-pointer group`}
+                onMouseEnter={() => setHoveredStat(21)}
+                onMouseLeave={() => setHoveredStat(null)}
+              >
+                <span className={`flex size-8 items-center justify-center rounded-xl transition-all duration-300 ${hoveredStat === 21 ? "bg-emerald-600 text-white scale-110 -rotate-6" : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600"}`}><Package className="size-4" /></span>
                 <span className="text-xs font-bold leading-none">Tauri Native<br /><span className="text-[11px] font-medium text-emerald-600">Offline shell</span></span>
+                <span className={`pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white transition-all duration-300 ${hoveredStat === 21 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}>Rust + Tauri v2 — zero browser</span>
+              </div>
+
+              {/* sparkles on hover */}
+              <div className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${mockHovered ? "opacity-100" : "opacity-0"}`}>
+                <span className="absolute right-6 top-6 animate-pulse text-primary">✦</span>
+                <span className="absolute left-8 bottom-20 animate-pulse delay-150 text-emerald-500">✦</span>
+                <span className="absolute right-12 bottom-6 animate-pulse delay-300 text-violet-500">✦</span>
               </div>
             </div>
           </div>
