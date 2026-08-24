@@ -44,6 +44,7 @@ export default function App() {
   const [dark, setDark] = useState(false)
   const [mobileMenu, setMobileMenu] = useState(false)
   const [active, setActive] = useState("home")
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -51,6 +52,7 @@ export default function App() {
 
   useEffect(() => {
     const onScroll = () => {
+      setScrolled(window.scrollY > 8)
       const ids = ["home", "work", "features", "download", "about"]
       const y = window.scrollY + 120
       for (const id of ids) {
@@ -61,6 +63,7 @@ export default function App() {
         }
       }
     }
+    onScroll()
     addEventListener("scroll", onScroll)
     return () => removeEventListener("scroll", onScroll)
   }, [])
@@ -72,8 +75,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FCFCF9] dark:bg-[#0A0A0B] text-zinc-900 dark:text-zinc-100 overflow-x-hidden selection:bg-primary/20">
-      {/* NAV */}
-      <header className="sticky top-0 z-50 border-b border-zinc-200/60 dark:border-zinc-800 bg-[#FCFCF9]/80 dark:bg-[#0A0A0B]/80 backdrop-blur-2xl">
+      {/* NAV - stays pinned, gains solid bg + shadow on scroll so links always legible */}
+      <header
+        className={`sticky top-0 z-50 border-b backdrop-blur-2xl transition-all duration-300 ${scrolled ? "border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 shadow-sm" : "border-zinc-200/60 dark:border-zinc-800/60 bg-[#FCFCF9]/80 dark:bg-[#0A0A0B]/80"}`}
+      >
         <div className="mx-auto flex h-[68px] max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="flex size-9 items-center justify-center rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900">
@@ -145,7 +150,30 @@ export default function App() {
             </nav>
           </div>
         )}
+        {/* scroll progress */}
+        <div className="absolute bottom-0 left-0 h-[2px] bg-zinc-900 dark:bg-white transition-all" style={{ width: scrolled ? "100%" : "0%", opacity: scrolled ? 0.12 : 0 }} />
       </header>
+
+      {/* floating pill nav - always visible, keeps links in view while scrolling (mobile + tablet) */}
+      <nav className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[420px]">
+        <div className="flex items-center justify-between gap-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-1.5">
+          {[
+            ["home", "Home"],
+            ["work", "Work"],
+            ["features", "Features"],
+            ["download", "Get"],
+            ["about", "About"],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => go(id)}
+              className={`flex-1 rounded-full px-3 py-2 text-xs font-medium transition ${active === id ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow" : "text-zinc-600 dark:text-zinc-400"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </nav>
 
       {/* HERO */}
       <section id="home" className="relative">
