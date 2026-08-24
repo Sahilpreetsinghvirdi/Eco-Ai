@@ -74,10 +74,10 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FCFCF9] dark:bg-[#0A0A0B] text-zinc-900 dark:text-zinc-100 overflow-x-hidden selection:bg-primary/20">
-      {/* NAV - stays pinned, gains solid bg + shadow on scroll so links always legible */}
+    <div className="min-h-screen bg-[#FCFCF9] dark:bg-[#0A0A0B] text-zinc-900 dark:text-zinc-100 overflow-x-clip selection:bg-primary/20">
+      {/* NAV - fixed so it NEVER leaves viewport, links always in view */}
       <header
-        className={`sticky top-0 z-50 border-b backdrop-blur-2xl transition-all duration-300 ${scrolled ? "border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 shadow-sm" : "border-zinc-200/60 dark:border-zinc-800/60 bg-[#FCFCF9]/80 dark:bg-[#0A0A0B]/80"}`}
+        className={`fixed top-0 left-0 right-0 z-50 border-b backdrop-blur-2xl transition-all duration-300 ${scrolled ? "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-[0_4px_20px_rgba(0,0,0,0.06)]" : "border-zinc-200/60 dark:border-zinc-800/60 bg-[#FCFCF9]/80 dark:bg-[#0A0A0B]/80"}`}
       >
         <div className="mx-auto flex h-[68px] max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
@@ -153,6 +153,8 @@ export default function App() {
         {/* scroll progress */}
         <div className="absolute bottom-0 left-0 h-[2px] bg-zinc-900 dark:bg-white transition-all" style={{ width: scrolled ? "100%" : "0%", opacity: scrolled ? 0.12 : 0 }} />
       </header>
+      {/* spacer for fixed header */}
+      <div className="h-[68px]" aria-hidden />
 
       {/* floating pill nav - always visible, keeps links in view while scrolling (mobile + tablet) */}
       <nav className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[420px]">
