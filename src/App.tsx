@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -45,6 +45,10 @@ export default function App() {
   const [mobileMenu, setMobileMenu] = useState(false)
   const [active, setActive] = useState("home")
   const [scrolled, setScrolled] = useState(false)
+  const desktopNavRef = useRef<HTMLDivElement>(null)
+  const mobilePillRef = useRef<HTMLDivElement>(null)
+  const [desktopIndicator, setDesktopIndicator] = useState({ left: 0, width: 0, opacity: 0 })
+  const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -67,6 +71,35 @@ export default function App() {
     addEventListener("scroll", onScroll)
     return () => removeEventListener("scroll", onScroll)
   }, [])
+
+  // smooth sliding highlight - measures active pill and animates indicator with spring
+  useLayoutEffect(() => {
+    const update = () => {
+      if (desktopNavRef.current) {
+        const activeEl = desktopNavRef.current.querySelector(`[data-nav="${active}"]`) as HTMLElement | null
+        if (activeEl) {
+          const navRect = desktopNavRef.current.getBoundingClientRect()
+          const rect = activeEl.getBoundingClientRect()
+          setDesktopIndicator({ left: rect.left - navRect.left, width: rect.width, opacity: 1 })
+        }
+      }
+      if (mobilePillRef.current) {
+        const activeEl = mobilePillRef.current.querySelector(`[data-mnav="${active}"]`) as HTMLElement | null
+        if (activeEl) {
+          const navRect = mobilePillRef.current.getBoundingClientRect()
+          const rect = activeEl.getBoundingClientRect()
+          setMobileIndicator({ left: rect.left - navRect.left, width: rect.width, opacity: 1 })
+        }
+      }
+    }
+    // next frame to ensure layout is ready
+    const id = requestAnimationFrame(update)
+    window.addEventListener("resize", update)
+    return () => {
+      cancelAnimationFrame(id)
+      window.removeEventListener("resize", update)
+    }
+  }, [active])
 
   const go = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
@@ -95,7 +128,18 @@ export default function App() {
             </Badge>
           </div>
 
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-1 relative p-1">
+            {/* sliding black pill */}
+            <div
+              className="absolute top-1 bottom-1 rounded-full bg-zinc-900 dark:bg-white shadow-sm will-change-transform"
+              style={{
+                left: desktopIndicator.left,
+                width: desktopIndicator.width,
+                opacity: desktopIndicator.opacity,
+                transition: "left 520ms cubic-bezier(0.32, 0.72, 0, 1), width 520ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms",
+              }}
+              aria-hidden
+            />
             {[
               ["home", "Home"],
               ["work", "How it works"],
@@ -105,8 +149,9 @@ export default function App() {
             ].map(([id, label]) => (
               <button
                 key={id}
+                data-nav={id}
                 onClick={() => go(id)}
-                className={`rounded-full px-4 py-2 text-[13px] font-medium transition ${active === id ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900" : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"}`}
+                className={`relative z-10 rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-300 ${active === id ? "text-white dark:text-zinc-900" : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"}`}
               >
                 {label}
               </button>
@@ -156,9 +201,19 @@ export default function App() {
       {/* spacer for fixed header */}
       <div className="h-[68px]" aria-hidden />
 
-      {/* floating pill nav - always visible, keeps links in view while scrolling (mobile + tablet) */}
+      {/* floating pill nav - always visible, smooth sliding highlight */}
       <nav className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-24px)] max-w-[420px]">
-        <div className="flex items-center justify-between gap-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-1.5">
+        <div ref={mobilePillRef} className="relative flex items-center justify-between gap-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-1.5">
+          <div
+            className="absolute top-1.5 bottom-1.5 rounded-full bg-zinc-900 dark:bg-white shadow will-change-transform"
+            style={{
+              left: mobileIndicator.left,
+              width: mobileIndicator.width,
+              opacity: mobileIndicator.opacity,
+              transition: "left 520ms cubic-bezier(0.32, 0.72, 0, 1), width 520ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms",
+            }}
+            aria-hidden
+          />
           {[
             ["home", "Home"],
             ["work", "Work"],
@@ -168,8 +223,9 @@ export default function App() {
           ].map(([id, label]) => (
             <button
               key={id}
+              data-mnav={id}
               onClick={() => go(id)}
-              className={`flex-1 rounded-full px-3 py-2 text-xs font-medium transition ${active === id ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow" : "text-zinc-600 dark:text-zinc-400"}`}
+              className={`relative z-10 flex-1 rounded-full px-3 py-2 text-xs font-medium transition-colors duration-300 ${active === id ? "text-white dark:text-zinc-900" : "text-zinc-600 dark:text-zinc-400"}`}
             >
               {label}
             </button>
