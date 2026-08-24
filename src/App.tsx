@@ -169,7 +169,7 @@ export default function App() {
             >
               <GithubIcon className="size-4" /> GitHub
             </Button>
-            <Button className="hidden lg:inline-flex rounded-full bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 px-5" onClick={() => go("download")}>
+            <Button className="hidden lg:inline-flex rounded-full bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 px-5 hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300" onClick={() => go("download")}>
               Download <ArrowUpRight className="size-4" />
             </Button>
             <Button variant="ghost" size="icon" className="lg:hidden size-9" onClick={() => setMobileMenu(!mobileMenu)}>
@@ -266,18 +266,18 @@ export default function App() {
               </p>
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
-                <Button size="lg" className="rounded-full h-12 px-7 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 text-[15px] shadow-lg shadow-zinc-900/10" onClick={() => go("download")}>
+                <Button size="lg" className="rounded-full h-12 px-7 bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 text-[15px] shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300" onClick={() => go("download")}>
                   <Download className="size-4" /> Download for Windows
                   <span className="ml-2 hidden sm:inline-flex items-center gap-1 text-xs opacity-60">.exe • .msi <ArrowRight className="size-3" /></span>
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-full h-12 px-7 bg-white dark:bg-zinc-900 text-[15px]"
+                  className="rounded-full h-12 px-7 bg-white dark:bg-zinc-900 text-[15px] border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300"
                   onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}
                 >
                   <GithubIcon className="size-4" /> View source
-                  <ExternalLink className="size-3.5 opacity-50" />
+                  <ExternalLink className="size-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
                 </Button>
               </div>
 
@@ -699,13 +699,13 @@ export default function App() {
               </div>
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <Button size="lg" className="rounded-full h-11 px-6 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 w-full sm:w-auto" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases", "_blank")}>
+                <Button size="lg" className="rounded-full h-11 px-6 bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 w-full sm:w-auto shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases", "_blank")}>
                   <Download className="size-4" /> Download .exe / .msi
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="rounded-full h-11 px-6 w-full sm:w-auto bg-white dark:bg-zinc-900"
+                  className="rounded-full h-11 px-6 w-full sm:w-auto bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300"
                   onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}
                 >
                   <GithubIcon className="size-4" /> Source
@@ -820,13 +820,13 @@ export default function App() {
                 <div className="mt-3 text-[22px] font-bold leading-tight">Make segregation a reflex — with AI.</div>
                 <div className="mt-2 text-sm leading-relaxed opacity-80">From classrooms to MRFs, turn waste photos into clean, installable knowledge.</div>
                 <div className="mt-6 flex gap-2">
-                  <Button size="sm" className="rounded-full bg-white text-zinc-900 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-white" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}>
+                  <Button size="sm" className="rounded-full bg-white text-zinc-900 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-white hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-all duration-300" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}>
                     <GithubIcon className="size-4" /> Repo
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="rounded-full bg-transparent border-white/20 text-white hover:bg-white/10 dark:border-zinc-900/20 dark:text-zinc-900"
+                    className="rounded-full bg-transparent border-white/20 text-white hover:bg-white hover:text-zinc-900 dark:border-zinc-900/20 dark:text-zinc-900 dark:hover:bg-zinc-900 dark:hover:text-white hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.03] active:translate-y-0 active:scale-[0.97] transition-all duration-300"
                     onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub/tree/master/logs", "_blank")}
                   >
                     <FileText className="size-4" /> Logs
