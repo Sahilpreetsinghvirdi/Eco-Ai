@@ -49,6 +49,7 @@ export default function App() {
   const mobilePillRef = useRef<HTMLDivElement>(null)
   const [desktopIndicator, setDesktopIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
+  const jumpingRef = useRef(false)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -57,6 +58,7 @@ export default function App() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 8)
+      if (jumpingRef.current) return
       const ids = ["home", "work", "features", "download", "about"]
       const y = window.scrollY + 120
       for (const id of ids) {
@@ -102,8 +104,14 @@ export default function App() {
   }, [active])
 
   const go = (id: string) => {
+    // jump directly - keep simple scroll spy but don't hang over intermediate pills
+    jumpingRef.current = true
+    setActive(id)
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
     setMobileMenu(false)
+    window.setTimeout(() => {
+      jumpingRef.current = false
+    }, 900)
   }
 
   return (
