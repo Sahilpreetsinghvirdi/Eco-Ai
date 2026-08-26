@@ -649,8 +649,8 @@ export default function App() {
             </p>
           </div>
 
-          <div className="flex-1 flex items-center mt-4 sm:mt-6 overflow-hidden">
-            <div ref={featuresTrackRef} className="flex gap-4 sm:gap-5 px-4 sm:px-6 lg:px-8 will-change-transform" style={{ transform: "translateX(0px)" }}>
+          <div className="flex-1 flex items-center mt-4 sm:mt-6 overflow-hidden border-y border-zinc-200 dark:border-zinc-800">
+            <div ref={featuresTrackRef} className="flex gap-0 w-full will-change-transform" style={{ transform: "translateX(0px)" }}>
               {[
                 {
                   icon: ScanSearch,
@@ -725,26 +725,27 @@ export default function App() {
                     onMouseEnter={() => setActiveFeature(idx)}
                     onMouseLeave={() => setActiveFeature(null)}
                     onClick={() => setActiveFeature(isActive ? null : idx)}
-                    className={`group relative flex-shrink-0 snap-start rounded-[24px] border bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "w-[320px] sm:w-[380px] shadow-xl border-zinc-900 dark:border-zinc-700" : "w-[260px] sm:w-[280px] hover:w-[300px] sm:hover:w-[320px] border-zinc-200 dark:border-zinc-800 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700"} h-[68vh] sm:h-[72vh] min-h-[480px] max-h-[560px] flex flex-col`}
+                    className={`group relative flex-shrink-0 snap-start rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none transition-all duration-500 ease-out ${isActive ? "w-[340px] sm:w-[400px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.04)]" : "w-[260px] sm:w-[280px] hover:w-[300px] sm:hover:w-[320px]"} h-[68vh] sm:h-[72vh] min-h-[480px] max-h-[560px] flex flex-col last:border-r-0`}
                   >
-                    {/* big feature name like numbers in your projects - but with feature short name */}
+                    {/* big feature name like numbers - sharp, no gap */}
                     <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
                       <span
-                        className={`text-[64px] sm:text-[72px] font-black tracking-tighter leading-none select-none transition-all duration-700 ${isActive ? "scale-110 text-zinc-900 dark:text-white" : "scale-100 text-zinc-900/[0.06] dark:text-white/[0.06] group-hover:text-zinc-900/[0.08] dark:group-hover:text-white/[0.08]"}`}
+                        className={`text-[72px] sm:text-[84px] font-black tracking-tighter leading-none select-none transition-all duration-700 ease-out ${isActive ? "scale-105 text-zinc-900 dark:text-white" : "scale-100 text-zinc-900/[0.06] dark:text-white/[0.06] group-hover:text-zinc-900/[0.08] dark:group-hover:text-white/[0.08]"}`}
                         style={{ writingMode: "vertical-rl" } as React.CSSProperties}
                       >
                         {f.short}
                       </span>
                     </div>
-                    {/* image reveal on active/hover */}
-                    <div className={`absolute inset-0 transition-opacity duration-700 ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
-                      <div className={`absolute inset-0 ${f.color} opacity-[0.04]`} />
+                    {/* image - smooth reveal with scale */}
+                    <div className={`absolute inset-0 transition-all duration-700 ease-out ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      <div className={`absolute inset-0 ${f.color} opacity-[0.03]`} />
                       <img
-                        src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/400/600`}
+                        src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/600/600`}
                         alt=""
-                        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] group-hover:opacity-10 transition-opacity duration-700"
+                        className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${isActive ? "opacity-15 scale-105" : "opacity-0 scale-100 group-hover:opacity-10 group-hover:scale-102"}`}
                         loading="lazy"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-transparent dark:from-zinc-900/60 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                     </div>
 
                     {/* top number + meta */}
