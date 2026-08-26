@@ -54,6 +54,8 @@ export default function App() {
   const jumpingRef = useRef(false)
   const [release, setRelease] = useState<any>(null)
   const [activeFeature, setActiveFeature] = useState<number | null>(null)
+  const featuresSectionRef = useRef<HTMLElement>(null)
+  const featuresTrackRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -119,6 +121,30 @@ export default function App() {
       window.removeEventListener("resize", update)
     }
   }, [active])
+
+  // features: scroll down to scroll horizontal, only after last box does page continue
+  useEffect(() => {
+    const onScroll = () => {
+      if (!featuresSectionRef.current || !featuresTrackRef.current) return
+      const rect = featuresSectionRef.current.getBoundingClientRect()
+      const sectionHeight = featuresSectionRef.current.offsetHeight
+      const viewportHeight = window.innerHeight
+      const scrollable = sectionHeight - viewportHeight
+      if (scrollable <= 0) return
+      const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1)
+      const maxX = featuresTrackRef.current.scrollWidth - window.innerWidth + 32
+      if (maxX > 0) {
+        featuresTrackRef.current.style.transform = `translateX(-${progress * maxX}px)`
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    onScroll()
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [])
 
   const go = (id: string) => {
     // jump directly - keep simple scroll spy but don't hang over intermediate pills
@@ -608,24 +634,23 @@ export default function App() {
         </div>
       </section>
 
-      {/* FEATURES bento */}
-      <section id="features" className="py-10 sm:py-16 bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
-        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+      {/* FEATURES - pinned horizontal, scroll down to go horizontal, long vertical cards */}
+      <section ref={featuresSectionRef} id="features" className="relative h-[260vh] sm:h-[300vh] bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
+        <div className="sticky top-[68px] h-[calc(100vh-68px)] min-h-[520px] flex flex-col overflow-hidden">
+          <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-3 sm:gap-4 shrink-0">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-zinc-900 border px-3 py-1 text-xs font-medium">
                 <Layers className="size-3.5" /> Platform
               </div>
-              <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">Four pillars. One hub.</h2>
+              <h2 className="mt-3 text-[24px] sm:text-[28px] lg:text-[32px] font-bold tracking-tight">AIs first, then everything else.</h2>
             </div>
-            <p className="max-w-[520px] text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-              Analyzer is the hero. The hub wraps it in daily life — carbon, energy, food — all native, all offline-capable, all ISC-ready.
+            <p className="max-w-[520px] text-[13px] sm:text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+              Important features only — 3 AIs then trackers. Scroll down, the strip moves. Only after the last card does the page continue.
             </p>
           </div>
 
-          <div className="mt-8 -mx-4 px-4 sm:mx-0 sm:px-0">
-            <div className="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-none" style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}>
-              <style>{`.scrollbar-none::-webkit-scrollbar{display:none}`}</style>
+          <div className="flex-1 flex items-center mt-4 sm:mt-6 overflow-hidden">
+            <div ref={featuresTrackRef} className="flex gap-4 sm:gap-5 px-4 sm:px-6 lg:px-8 will-change-transform" style={{ transform: "translateX(0px)" }}>
               {[
                 {
                   icon: ScanSearch,
@@ -644,13 +669,14 @@ export default function App() {
                   short: "AGRI",
                 },
                 {
-                  icon: BarChart3,
-                  title: "Dashboard",
-                  desc: "One glance: carbon, energy, waste, streaks, area charts. Theme-aware (Porcelain/Midnight) with anti-flash.",
-                  meta: "Charts • Badges",
-                  color: "bg-violet-600",
-                  short: "DASH",
+                  icon: Flower2,
+                  title: "PlantSense",
+                  desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
+                  meta: "New • v1.2+",
+                  color: "bg-emerald-700",
+                  short: "PLANT",
                 },
+
                 {
                   icon: Leaf,
                   title: "Carbon Tracker",
@@ -676,14 +702,6 @@ export default function App() {
                   short: "FOOD",
                 },
                 {
-                  icon: Flower2,
-                  title: "PlantSense",
-                  desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
-                  meta: "New • v1.2+",
-                  color: "bg-emerald-700",
-                  short: "PLANT",
-                },
-                {
                   icon: Smartphone,
                   title: "Android Companion",
                   desc: "Same AI tools on Android, standalone APK like Instagram. No Expo Go, shares backend over LAN.",
@@ -707,7 +725,7 @@ export default function App() {
                     onMouseEnter={() => setActiveFeature(idx)}
                     onMouseLeave={() => setActiveFeature(null)}
                     onClick={() => setActiveFeature(isActive ? null : idx)}
-                    className={`group relative flex-shrink-0 snap-start rounded-[24px] border bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "w-[300px] sm:w-[360px] shadow-xl border-zinc-900 dark:border-zinc-700" : "w-[240px] sm:w-[260px] hover:w-[300px] sm:hover:w-[320px] border-zinc-200 dark:border-zinc-800 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700"} h-[380px] sm:h-[420px] flex flex-col`}
+                    className={`group relative flex-shrink-0 snap-start rounded-[24px] border bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "w-[320px] sm:w-[380px] shadow-xl border-zinc-900 dark:border-zinc-700" : "w-[260px] sm:w-[280px] hover:w-[300px] sm:hover:w-[320px] border-zinc-200 dark:border-zinc-800 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700"} h-[68vh] sm:h-[72vh] min-h-[480px] max-h-[560px] flex flex-col`}
                   >
                     {/* big feature name like numbers in your projects - but with feature short name */}
                     <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
@@ -748,12 +766,8 @@ export default function App() {
                       <div className="mt-auto">
                         <h3 className="text-[15px] sm:text-[16px] font-bold leading-tight tracking-tight">{f.title}</h3>
                         <p className={`mt-1.5 text-xs sm:text-[13px] leading-relaxed line-clamp-3 transition-all duration-500 ${isActive ? "text-zinc-600 dark:text-zinc-400 opacity-100" : "text-zinc-500 dark:text-zinc-500 opacity-80 group-hover:opacity-100"}`}>{f.desc}</p>
-                        <div className="mt-3 flex items-center justify-between">
-                          <span className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border px-2.5 py-1 text-[10px] font-bold tracking-wide">{f.meta}</span>
-                          <span className="flex items-center gap-1 text-xs font-medium">
-                            <span className="hidden sm:inline">Sahil Virdi</span>
-                            <ArrowUpRight className={`size-3.5 text-emerald-600 transition-all duration-300 ${isActive ? "translate-x-0 opacity-100" : "opacity-60 group-hover:translate-x-0.5"}`} />
-                          </span>
+                        <div className="mt-3">
+                          <span className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[10px] font-bold tracking-wide">{f.meta}</span>
                         </div>
                       </div>
                     </div>
