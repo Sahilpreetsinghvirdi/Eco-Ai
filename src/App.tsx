@@ -777,7 +777,7 @@ export default function App() {
                     {/* content */}
                     <div className="relative p-5 sm:p-6 flex flex-col h-full">
                       <div className="flex items-start justify-between">
-                        <span className={`flex size-8 items-center justify-center rounded-full border shadow-sm text-xs font-bold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 ${stepped === 0 ? "" : "scale-90"}`}>
+                        <span className={`flex size-8 items-center justify-center rounded-full border shadow-sm text-xs font-bold transition-all duration-500 ${stepped === 0 ? "bg-white/20 border-white/30 text-white backdrop-blur-sm" : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white scale-90"}`}>
                           {String(idx + 1).padStart(2, "0")}
                         </span>
                         <span className={`flex size-8 items-center justify-center rounded-xl text-white shadow-sm ${f.color} transition-transform duration-500 ${stepped === 0 ? "scale-110 rotate-3" : "scale-90"}`}>
@@ -786,10 +786,10 @@ export default function App() {
                       </div>
 
                       <div className="mt-auto">
-                        <h3 className={`font-bold leading-tight tracking-tight transition-all duration-500 ${stepped === 0 ? "text-[17px]" : "text-[14px]"}`}>{f.title}</h3>
-                        <p className={`mt-2 text-[13px] leading-relaxed transition-all duration-500 ${stepped === 0 ? "text-zinc-600 dark:text-zinc-400 opacity-100 line-clamp-4" : "text-zinc-500 dark:text-zinc-500 opacity-70 line-clamp-2"}`}>{f.desc}</p>
+                        <h3 className={`font-bold leading-tight tracking-tight transition-all duration-500 ${stepped === 0 ? "text-[17px] text-white" : "text-[14px] text-zinc-900 dark:text-white"}`}>{f.title}</h3>
+                        <p className={`mt-2 text-[13px] leading-relaxed transition-all duration-500 ${stepped === 0 ? "text-white/80 opacity-100 line-clamp-4" : "text-zinc-500 dark:text-zinc-500 opacity-70 line-clamp-2"}`}>{f.desc}</p>
                         <div className="mt-3">
-                          <span className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[10px] font-bold tracking-wide">{f.meta}</span>
+                          <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide transition-all duration-500 ${stepped === 0 ? "bg-white/15 border border-white/20 text-white backdrop-blur-sm" : "bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white"}`}>{f.meta}</span>
                         </div>
                       </div>
                     </div>
