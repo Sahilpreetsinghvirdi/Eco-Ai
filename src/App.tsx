@@ -93,134 +93,112 @@ export default function App() {
       .catch(() => {})
   }, [])
 
-  // features: smooth scroll with momentum/lag via lerp animation loop
+    // features: everything lerped for silky smooth — zero CSS transitions
   useEffect(() => {
     let raf: number
     let lastIdx = -1
     let current = 0
     let target = 0
-    const LERP = 0.08 // lower = more lag/momentum, higher = snappier
+    const LERP = 0.07
+
+    type CardState = {
+      scale: number; opacity: number; blur: number;
+      imgOpacity: number; imgBright: number; imgScale: number;
+      textWhite: number; gradOpacity: number;
+      width: number;
+    }
+    const cs: CardState[] = []
 
     const animate = () => {
       const section = featuresSectionRef.current
       const track = featuresTrackRef.current
-      if (!section || !track) {
-        raf = requestAnimationFrame(animate)
-        return
-      }
+      if (!section || !track) { raf = requestAnimationFrame(animate); return }
 
-      // update target from scroll
       const rect = section.getBoundingClientRect()
       const scrollable = section.offsetHeight - window.innerHeight
-      if (scrollable > 0) {
-        target = Math.min(Math.max(-rect.top / scrollable, 0), 1)
-      }
+      if (scrollable > 0) target = Math.min(Math.max(-rect.top / scrollable, 0), 1)
 
-      // lerp current toward target — this IS the momentum/lag
       current += (target - current) * LERP
-
-      // snap when very close
       if (Math.abs(target - current) < 0.0005) current = target
 
       const maxX = track.scrollWidth - window.innerWidth + 32
-      if (maxX > 0) {
-        track.style.transform = `translateX(${-current * maxX}px)`
-      }
+      if (maxX > 0) track.style.transform = `translateX(${-current * maxX}px)`
 
       const cards = track.children
       const total = cards.length
       const ci = Math.round(current * (total - 1))
-      if (ci !== lastIdx) {
-        lastIdx = ci
-        setCenterIdx(ci)
+      if (ci !== lastIdx) { lastIdx = ci; setCenterIdx(ci) }
+
+      while (cs.length < total) {
+        cs.push({ scale: 0.88, opacity: 0.8, blur: 0, imgOpacity: 0.15, imgBright: 0.6, imgScale: 1, textWhite: 0, gradOpacity: 0, width: 22 })
       }
+
+      const S = 0.12
 
       for (let i = 0; i < total; i++) {
         const d = Math.abs(i - ci)
         const card = cards[i] as HTMLElement
         if (!card) continue
+        const s = cs[i]
+
+        let tScale: number, tOp: number, tBlur: number, tImgOp: number, tImgBr: number, tImgSc: number, tTextW: number, tGradOp: number, tWidth: number
         if (d === 0) {
-          card.style.width = "min(420px, 32vw)"
-          card.style.transform = "scale(1) translateZ(0)"
-          card.style.opacity = "1"
-          card.style.filter = "none"
-          card.style.zIndex = "10"
+          tScale = 1; tOp = 1; tBlur = 0; tImgOp = 0.8; tImgBr = 1.05; tImgSc = 1.06; tTextW = 1; tGradOp = 1; tWidth = 32
         } else if (d === 1) {
-          card.style.width = "min(300px, 22vw)"
-          card.style.transform = "scale(0.88) translateZ(-40px)"
-          card.style.opacity = "0.55"
-          card.style.filter = "blur(1px)"
-          card.style.zIndex = "5"
+          tScale = 0.9; tOp = 0.75; tBlur = 0.5; tImgOp = 0.25; tImgBr = 0.7; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 22
         } else if (d === 2) {
-          card.style.width = "min(220px, 16vw)"
-          card.style.transform = "scale(0.76) translateZ(-80px)"
-          card.style.opacity = "0.3"
-          card.style.filter = "blur(2px)"
-          card.style.zIndex = "2"
+          tScale = 0.8; tOp = 0.6; tBlur = 1; tImgOp = 0.12; tImgBr = 0.5; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 17
         } else {
-          card.style.width = "min(180px, 13vw)"
-          card.style.transform = "scale(0.65) translateZ(-120px)"
-          card.style.opacity = "0.15"
-          card.style.filter = "blur(3px)"
-          card.style.zIndex = "1"
+          tScale = 0.72; tOp = 0.5; tBlur = 1.5; tImgOp = 0.06; tImgBr = 0.4; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 14
         }
-        card.style.transformOrigin = i < ci ? "right center" : "left center"
 
-        // image
-        const img = card.querySelector("img") as HTMLElement | null
+        s.scale += (tScale - s.scale) * S
+        s.opacity += (tOp - s.opacity) * S
+        s.blur += (tBlur - s.blur) * S
+        s.imgOpacity += (tImgOp - s.imgOpacity) * S
+        s.imgBright += (tImgBr - s.imgBright) * S
+        s.imgScale += (tImgSc - s.imgScale) * S
+        s.textWhite += (tTextW - s.textWhite) * S
+        s.gradOpacity += (tGradOp - s.gradOpacity) * S
+        s.width += (tWidth - s.width) * S
+
+        card.style.width = `min(${Math.round(s.width * 13)}px, ${s.width}vw)`
+        card.style.transform = `scale(${s.scale}) translateZ(${-d * 40}px)`
+        card.style.opacity = String(s.opacity)
+        card.style.filter = s.blur > 0.1 ? `blur(${s.blur.toFixed(1)}px)` : 'none'
+        card.style.zIndex = String(10 - d)
+        card.style.transformOrigin = i < ci ? 'right center' : 'left center'
+
+        const img = card.querySelector('img') as HTMLElement | null
         if (img) {
-          if (d === 0) {
-            img.style.opacity = "0.75"
-            img.style.filter = "brightness(1.05) contrast(1.05)"
-            img.style.transform = "scale(1.06)"
-          } else if (d === 1) {
-            img.style.opacity = "0.2"
-            img.style.filter = "brightness(0.5) saturate(0.4)"
-            img.style.transform = "scale(1)"
-          } else {
-            img.style.opacity = "0.08"
-            img.style.filter = "brightness(0.3) saturate(0.2)"
-            img.style.transform = "scale(1)"
-          }
+          img.style.opacity = String(s.imgOpacity)
+          img.style.filter = s.imgBright >= 1 ? `brightness(${s.imgBright.toFixed(2)}) contrast(1.05)` : `brightness(${s.imgBright.toFixed(2)}) saturate(${s.imgBright.toFixed(2)})`
+          img.style.transform = `scale(${s.imgScale.toFixed(3)})`
         }
 
-        // text
-        const h3 = card.querySelector("h3") as HTMLElement | null
-        const p = card.querySelector("p") as HTMLElement | null
-        const numBadge = card.querySelector("[data-num]") as HTMLElement | null
-        const metaBadge = card.querySelector("[data-meta]") as HTMLElement | null
-        if (h3) h3.style.color = d === 0 ? "#fff" : ""
-        if (p) p.style.color = d === 0 ? "rgba(255,255,255,0.8)" : ""
+        const h3 = card.querySelector('h3') as HTMLElement | null
+        const p = card.querySelector('p') as HTMLElement | null
+        const glass = s.textWhite > 0.5
+        if (h3) h3.style.color = glass ? '#fff' : ''
+        if (p) p.style.color = glass ? 'rgba(255,255,255,0.8)' : ''
+
+        const numBadge = card.querySelector('[data-num]') as HTMLElement | null
+        const metaBadge = card.querySelector('[data-meta]') as HTMLElement | null
         if (numBadge) {
-          if (d === 0) {
-            numBadge.style.background = "rgba(255,255,255,0.15)"
-            numBadge.style.borderColor = "rgba(255,255,255,0.25)"
-            numBadge.style.color = "#fff"
-            numBadge.style.backdropFilter = "blur(8px)"
-          } else {
-            numBadge.style.background = ""
-            numBadge.style.borderColor = ""
-            numBadge.style.color = ""
-            numBadge.style.backdropFilter = ""
-          }
+          numBadge.style.background = glass ? 'rgba(255,255,255,0.15)' : ''
+          numBadge.style.borderColor = glass ? 'rgba(255,255,255,0.25)' : ''
+          numBadge.style.color = glass ? '#fff' : ''
+          numBadge.style.backdropFilter = glass ? 'blur(8px)' : ''
         }
         if (metaBadge) {
-          if (d === 0) {
-            metaBadge.style.background = "rgba(255,255,255,0.12)"
-            metaBadge.style.borderColor = "rgba(255,255,255,0.2)"
-            metaBadge.style.color = "#fff"
-            metaBadge.style.backdropFilter = "blur(8px)"
-          } else {
-            metaBadge.style.background = ""
-            metaBadge.style.borderColor = ""
-            metaBadge.style.color = ""
-            metaBadge.style.backdropFilter = ""
-          }
+          metaBadge.style.background = glass ? 'rgba(255,255,255,0.12)' : ''
+          metaBadge.style.borderColor = glass ? 'rgba(255,255,255,0.2)' : ''
+          metaBadge.style.color = glass ? '#fff' : ''
+          metaBadge.style.backdropFilter = glass ? 'blur(8px)' : ''
         }
 
-        // gradient
-        const grad = card.querySelector("[data-grad]") as HTMLElement | null
-        if (grad) grad.style.opacity = d === 0 ? "1" : "0"
+        const grad = card.querySelector('[data-grad]') as HTMLElement | null
+        if (grad) grad.style.opacity = String(s.gradOpacity)
       }
 
       raf = requestAnimationFrame(animate)
@@ -230,7 +208,7 @@ export default function App() {
     return () => cancelAnimationFrame(raf)
   }, [])
 
-  // smooth sliding highlight - measures active pill and animates indicator with spring
+// smooth sliding highlight - measures active pill and animates indicator with spring
   useLayoutEffect(() => {
     const update = () => {
       if (desktopNavRef.current) {
@@ -837,7 +815,6 @@ export default function App() {
                     key={f.title}
                     className="group relative flex-shrink-0 rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none last:border-r-0"
                     style={{
-                      transition: "width 0.5s cubic-bezier(0.25,1,0.5,1), transform 0.5s cubic-bezier(0.25,1,0.5,1), opacity 0.5s ease, filter 0.5s ease",
                       width: "min(300px, 22vw)",
                       height: "100%",
                       minHeight: "400px",
@@ -860,16 +837,15 @@ export default function App() {
                         src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/600/800`}
                         alt=""
                         className="absolute inset-0 w-full h-full object-cover"
-                        style={{ transition: "opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease" } as React.CSSProperties}
                         loading="lazy"
                       />
-                      <div data-grad className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 pointer-events-none" style={{ transition: "opacity 0.5s ease" }} />
+                      <div data-grad className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 pointer-events-none" />
                     </div>
 
                     {/* content */}
                     <div className="relative p-5 sm:p-6 flex flex-col h-full">
                       <div className="flex items-start justify-between">
-                        <span data-num className="flex size-8 items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-700 shadow-sm text-xs font-bold bg-white dark:bg-zinc-900" style={{ transition: "all 0.4s ease" }}>
+                        <span data-num className="flex size-8 items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-700 shadow-sm text-xs font-bold bg-white dark:bg-zinc-900">
                           {String(idx + 1).padStart(2, "0")}
                         </span>
                         <span className={`flex size-8 items-center justify-center rounded-xl text-white shadow-sm ${f.color}`}>
@@ -878,10 +854,10 @@ export default function App() {
                       </div>
 
                       <div className="mt-auto">
-                        <h3 className="text-[15px] font-bold leading-tight tracking-tight" style={{ transition: "color 0.4s ease" }}>{f.title}</h3>
-                        <p className="mt-2 text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-500 line-clamp-3" style={{ transition: "color 0.4s ease" }}>{f.desc}</p>
+                        <h3 className="text-[15px] font-bold leading-tight tracking-tight">{f.title}</h3>
+                        <p className="mt-2 text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-500 line-clamp-3">{f.desc}</p>
                         <div className="mt-3">
-                          <span data-meta className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[10px] font-bold tracking-wide" style={{ transition: "all 0.4s ease" }}>{f.meta}</span>
+                          <span data-meta className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[10px] font-bold tracking-wide">{f.meta}</span>
                         </div>
                       </div>
                     </div>
