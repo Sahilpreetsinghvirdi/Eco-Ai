@@ -32,6 +32,8 @@ import {
   Flower2,
   Bug,
   ClipboardCheck,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -53,6 +55,7 @@ export default function App() {
   const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const jumpingRef = useRef(false)
   const [release, setRelease] = useState<any>(null)
+  const featuresRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -622,84 +625,125 @@ export default function App() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                span: "sm:col-span-2 lg:col-span-2",
-                icon: ScanSearch,
-                title: "AI Waste Analyzer",
-                desc: "Upload or webcam → Gemini vision → pie, hazard gauge, toxins, uses, alternatives, disposal + history. ~10s, structured JSON, 180s timeout.",
-                meta: "Gemini 3.6 Flash • Live",
-                color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
-              },
-              {
-                icon: Sprout,
-                title: "AgriSense",
-                desc: "Photograph any fertilizer; get NPK, suitability verdict 0–100 for crop/soil/stage, dosage, risks & alternatives.",
-                meta: "Fertilizer • NPK",
-                color: "bg-green-600",
-              },
-              {
-                icon: BarChart3,
-                title: "Dashboard",
-                desc: "One glance: carbon, energy, waste, streaks, area charts. Theme-aware (Porcelain/Midnight) with anti-flash.",
-                meta: "Charts • Badges",
-                color: "bg-violet-600",
-              },
-              {
-                icon: Leaf,
-                title: "Carbon Tracker",
-                desc: "Scan receipts or log manually. Auto-categorized kg CO₂e with weekly trends.",
-                meta: "Receipt → CO₂e",
-                color: "bg-emerald-600",
-              },
-              {
-                icon: Zap,
-                title: "Energy Monitor",
-                desc: "Parse bills (kWh/therms/gal), run audits with saving tips.",
-                meta: "Bill parse",
-                color: "bg-amber-500",
-              },
-              {
-                icon: Apple,
-                title: "Food Waste",
-                desc: "Photo-log plate waste, streaks, breakdowns. Cut kitchen waste.",
-                meta: "Streaks",
-                color: "bg-orange-500",
-              },
-              {
-                icon: Flower2,
-                title: "PlantSense",
-                desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
-                meta: "New • v1.2+",
-                color: "bg-emerald-700",
-              },
-              {
-                icon: Smartphone,
-                title: "Android Companion",
-                desc: "Same AI tools on Android, standalone APK like Instagram. No Expo Go, shares backend over LAN.",
-                meta: "New • v1.4.0",
-                color: "bg-indigo-600",
-              },
-              {
-                icon: Database,
-                title: "History & Stats",
+          <div className="mt-8 relative group/features">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                <span className="hidden sm:inline">Drag to explore</span>
+                <span className="sm:hidden">Swipe</span>
+                <span className="hidden sm:inline-flex items-center gap-1">→ <span className="w-1 h-1 rounded-full bg-zinc-400 animate-pulse" /></span>
+              </p>
+              <div className="hidden sm:flex items-center gap-2">
+                <button
+                  onClick={() => featuresRef.current?.scrollBy({ left: -360, behavior: "smooth" })}
+                  className="flex size-9 items-center justify-center rounded-full border bg-white dark:bg-zinc-900 shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:shadow-md transition-all hover:scale-105 active:scale-95"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft className="size-4" />
+                </button>
+                <button
+                  onClick={() => featuresRef.current?.scrollBy({ left: 360, behavior: "smooth" })}
+                  className="flex size-9 items-center justify-center rounded-full border bg-white dark:bg-zinc-900 shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:shadow-md transition-all hover:scale-105 active:scale-95"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight className="size-4" />
+                </button>
+              </div>
+            </div>
+            <div
+              ref={featuresRef}
+              className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-pl-4 sm:scroll-pl-0"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
+            >
+              <style>{`.scrollbar-none::-webkit-scrollbar{display:none}`}</style>
+              {[
+                {
+                  icon: ScanSearch,
+                  title: "AI Waste Analyzer",
+                  desc: "Upload or webcam → Gemini vision → pie, hazard gauge, toxins, uses, alternatives, disposal + history. ~10s, structured JSON, 180s timeout.",
+                  meta: "Gemini 3.6 Flash • Live",
+                  color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
+                },
+                {
+                  icon: Sprout,
+                  title: "AgriSense",
+                  desc: "Photograph any fertilizer; get NPK, suitability verdict 0–100 for crop/soil/stage, dosage, risks & alternatives.",
+                  meta: "Fertilizer • NPK",
+                  color: "bg-green-600",
+                },
+                {
+                  icon: BarChart3,
+                  title: "Dashboard",
+                  desc: "One glance: carbon, energy, waste, streaks, area charts. Theme-aware (Porcelain/Midnight) with anti-flash.",
+                  meta: "Charts • Badges",
+                  color: "bg-violet-600",
+                },
+                {
+                  icon: Leaf,
+                  title: "Carbon Tracker",
+                  desc: "Scan receipts or log manually. Auto-categorized kg CO₂e with weekly trends.",
+                  meta: "Receipt → CO₂e",
+                  color: "bg-emerald-600",
+                },
+                {
+                  icon: Zap,
+                  title: "Energy Monitor",
+                  desc: "Parse bills (kWh/therms/gal), run audits with saving tips.",
+                  meta: "Bill parse",
+                  color: "bg-amber-500",
+                },
+                {
+                  icon: Apple,
+                  title: "Food Waste",
+                  desc: "Photo-log plate waste, streaks, breakdowns. Cut kitchen waste.",
+                  meta: "Streaks",
+                  color: "bg-orange-500",
+                },
+                {
+                  icon: Flower2,
+                  title: "PlantSense",
+                  desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
+                  meta: "New • v1.2+",
+                  color: "bg-emerald-700",
+                },
+                {
+                  icon: Smartphone,
+                  title: "Android Companion",
+                  desc: "Same AI tools on Android, standalone APK like Instagram. No Expo Go, shares backend over LAN.",
+                  meta: "New • v1.4.0",
+                  color: "bg-indigo-600",
+                },
+                {
+                  icon: Database,
+                  title: "History & Stats",
                 desc: "SQLite (no Postgres). Thumbnails, GET /stats/overview, History UI.",
                 meta: "New",
                 color: "bg-zinc-800",
               },
             ].map((f) => (
-              <Card key={f.title} className={`rounded-[20px] p-5 sm:p-6 border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-all hover:-translate-y-0.5 ${f.span || ""}`}>
-                <div className={`flex size-10 items-center justify-center rounded-xl text-white ${f.color}`}>
-                  <f.icon className="size-5" />
+              <Card
+                key={f.title}
+                className={`group relative flex flex-col min-w-[280px] sm:min-w-[300px] lg:min-w-[320px] h-[380px] sm:h-[400px] lg:h-[420px] snap-start rounded-[24px] p-6 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-xl hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 overflow-hidden shrink-0`}
+              >
+                <div className={`flex size-12 items-center justify-center rounded-2xl text-white shadow-sm ${f.color} group-hover:scale-105 group-hover:rotate-3 transition-all duration-300`}>
+                  <f.icon className="size-6" />
                 </div>
-                <div className="mt-4 flex items-center gap-2">
-                  <div className="text-[15px] font-bold">{f.title}</div>
-                  <span className="rounded-full bg-zinc-100 dark:bg-zinc-800 border px-2 py-0.5 text-[10px] font-bold tracking-wide">{f.meta}</span>
+                <div className="mt-5">
+                  <div className="text-[16px] font-bold leading-tight">{f.title}</div>
+                  <div className="mt-1.5 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-4">{f.desc}</div>
                 </div>
-                <div className="mt-1.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{f.desc}</div>
+                <div className="mt-auto pt-4 flex items-center justify-between">
+                  <span className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[11px] font-bold tracking-wide">{f.meta}</span>
+                  <span className="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                    <ArrowRight className="size-4" />
+                  </span>
+                </div>
+                <div className="pointer-events-none absolute inset-0 rounded-[24px] border border-transparent group-hover:border-zinc-200/50 dark:group-hover:border-zinc-700/50 transition-colors" />
               </Card>
             ))}
+            </div>
+            {/* fade edges - pro */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-6 sm:w-8 bg-gradient-to-r from-zinc-50 dark:from-zinc-900/30 to-transparent hidden sm:block" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-6 sm:w-8 bg-gradient-to-l from-zinc-50 dark:from-zinc-900/30 to-transparent hidden sm:block" />
           </div>
         </div>
       </section>
