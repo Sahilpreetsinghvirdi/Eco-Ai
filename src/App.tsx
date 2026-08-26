@@ -32,8 +32,6 @@ import {
   Flower2,
   Bug,
   ClipboardCheck,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react"
 
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -55,7 +53,6 @@ export default function App() {
   const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const jumpingRef = useRef(false)
   const [release, setRelease] = useState<any>(null)
-  const featuresRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -625,39 +622,10 @@ export default function App() {
             </p>
           </div>
 
-          <div className="mt-8 relative group/features">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                <span className="hidden sm:inline">Drag to explore</span>
-                <span className="sm:hidden">Swipe</span>
-                <span className="hidden sm:inline-flex items-center gap-1">→ <span className="w-1 h-1 rounded-full bg-zinc-400 animate-pulse" /></span>
-              </p>
-              <div className="hidden sm:flex items-center gap-2">
-                <button
-                  onClick={() => featuresRef.current?.scrollBy({ left: -360, behavior: "smooth" })}
-                  className="flex size-9 items-center justify-center rounded-full border bg-white dark:bg-zinc-900 shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:shadow-md transition-all hover:scale-105 active:scale-95"
-                  aria-label="Scroll left"
-                >
-                  <ChevronLeft className="size-4" />
-                </button>
-                <button
-                  onClick={() => featuresRef.current?.scrollBy({ left: 360, behavior: "smooth" })}
-                  className="flex size-9 items-center justify-center rounded-full border bg-white dark:bg-zinc-900 shadow-sm hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:shadow-md transition-all hover:scale-105 active:scale-95"
-                  aria-label="Scroll right"
-                >
-                  <ChevronRight className="size-4" />
-                </button>
-              </div>
-            </div>
-            <div
-              ref={featuresRef}
-              className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-pl-4 sm:scroll-pl-0"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}
-            >
-              <style>{`.scrollbar-none::-webkit-scrollbar{display:none}`}</style>
-              {[
-                {
-                  icon: ScanSearch,
+          <div className="mt-8 space-y-6 sm:space-y-8">
+            {[
+              {
+                icon: ScanSearch,
                   title: "AI Waste Analyzer",
                   desc: "Upload or webcam → Gemini vision → pie, hazard gauge, toxins, uses, alternatives, disposal + history. ~10s, structured JSON, 180s timeout.",
                   meta: "Gemini 3.6 Flash • Live",
@@ -719,31 +687,56 @@ export default function App() {
                 meta: "New",
                 color: "bg-zinc-800",
               },
-            ].map((f) => (
+            ].map((f, idx) => (
               <Card
                 key={f.title}
-                className={`group relative flex flex-col min-w-[280px] sm:min-w-[300px] lg:min-w-[320px] h-[380px] sm:h-[400px] lg:h-[420px] snap-start rounded-[24px] p-6 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:shadow-xl hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 overflow-hidden shrink-0`}
+                className="group grid md:grid-cols-12 gap-0 rounded-[24px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden hover:shadow-xl hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 p-0"
               >
-                <div className={`flex size-12 items-center justify-center rounded-2xl text-white shadow-sm ${f.color} group-hover:scale-105 group-hover:rotate-3 transition-all duration-300`}>
-                  <f.icon className="size-6" />
+                {/* image side like projects */}
+                <div className="md:col-span-5 relative h-[220px] sm:h-[260px] md:h-auto md:min-h-[280px] bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+                  <div className={`absolute inset-0 ${f.color} opacity-[0.08]`} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <f.icon className="size-16 sm:size-20 text-zinc-900/10 dark:text-white/10" />
+                  </div>
+                  {/* subtle grid */}
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:24px_24px] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)]" />
+                  <img
+                    src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/600/400`}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-[0.04] transition-opacity duration-700"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="flex size-8 items-center justify-center rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-sm text-xs font-bold">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className="hidden sm:inline-flex rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur border px-2.5 py-1 text-[11px] font-bold tracking-wide">
+                      {f.meta}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4 sm:hidden">
+                    <span className="inline-flex rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur border px-2.5 py-1 text-[11px] font-bold tracking-wide">
+                      {f.meta}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <div className="mt-5">
-                  <div className="text-[16px] font-bold leading-tight">{f.title}</div>
-                  <div className="mt-1.5 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-400 line-clamp-4">{f.desc}</div>
+                {/* content side */}
+                <div className="md:col-span-7 p-6 sm:p-8 flex flex-col">
+                  <div className={`hidden md:flex size-10 items-center justify-center rounded-xl text-white shadow-sm ${f.color}`}>
+                    <f.icon className="size-5" />
+                  </div>
+                  <h3 className="mt-0 md:mt-4 text-[18px] sm:text-[20px] font-bold tracking-tight leading-tight">{f.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{f.desc}</p>
+                  <div className="mt-6 flex items-center gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-3 py-1.5 text-xs font-medium group-hover:gap-2 transition-all">
+                      Explore <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
+                    </span>
+                    <span className="text-xs text-zinc-500">Sahil Virdi</span>
+                  </div>
                 </div>
-                <div className="mt-auto pt-4 flex items-center justify-between">
-                  <span className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[11px] font-bold tracking-wide">{f.meta}</span>
-                  <span className="flex size-8 items-center justify-center rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-                    <ArrowRight className="size-4" />
-                  </span>
-                </div>
-                <div className="pointer-events-none absolute inset-0 rounded-[24px] border border-transparent group-hover:border-zinc-200/50 dark:group-hover:border-zinc-700/50 transition-colors" />
               </Card>
             ))}
-            </div>
-            {/* fade edges - pro */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-6 sm:w-8 bg-gradient-to-r from-zinc-50 dark:from-zinc-900/30 to-transparent hidden sm:block" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-6 sm:w-8 bg-gradient-to-l from-zinc-50 dark:from-zinc-900/30 to-transparent hidden sm:block" />
           </div>
         </div>
       </section>
