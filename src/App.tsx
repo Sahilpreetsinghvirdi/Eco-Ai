@@ -53,6 +53,7 @@ export default function App() {
   const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const jumpingRef = useRef(false)
   const [release, setRelease] = useState<any>(null)
+  const [activeFeature, setActiveFeature] = useState<number | null>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -622,14 +623,17 @@ export default function App() {
             </p>
           </div>
 
-          <div className="mt-8 space-y-6 sm:space-y-8">
-            {[
-              {
-                icon: ScanSearch,
+          <div className="mt-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-none" style={{ scrollbarWidth: "none", msOverflowStyle: "none" } as React.CSSProperties}>
+              <style>{`.scrollbar-none::-webkit-scrollbar{display:none}`}</style>
+              {[
+                {
+                  icon: ScanSearch,
                   title: "AI Waste Analyzer",
                   desc: "Upload or webcam → Gemini vision → pie, hazard gauge, toxins, uses, alternatives, disposal + history. ~10s, structured JSON, 180s timeout.",
                   meta: "Gemini 3.6 Flash • Live",
                   color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
+                  short: "WASTE",
                 },
                 {
                   icon: Sprout,
@@ -637,6 +641,7 @@ export default function App() {
                   desc: "Photograph any fertilizer; get NPK, suitability verdict 0–100 for crop/soil/stage, dosage, risks & alternatives.",
                   meta: "Fertilizer • NPK",
                   color: "bg-green-600",
+                  short: "AGRI",
                 },
                 {
                   icon: BarChart3,
@@ -644,6 +649,7 @@ export default function App() {
                   desc: "One glance: carbon, energy, waste, streaks, area charts. Theme-aware (Porcelain/Midnight) with anti-flash.",
                   meta: "Charts • Badges",
                   color: "bg-violet-600",
+                  short: "DASH",
                 },
                 {
                   icon: Leaf,
@@ -651,6 +657,7 @@ export default function App() {
                   desc: "Scan receipts or log manually. Auto-categorized kg CO₂e with weekly trends.",
                   meta: "Receipt → CO₂e",
                   color: "bg-emerald-600",
+                  short: "CARBON",
                 },
                 {
                   icon: Zap,
@@ -658,6 +665,7 @@ export default function App() {
                   desc: "Parse bills (kWh/therms/gal), run audits with saving tips.",
                   meta: "Bill parse",
                   color: "bg-amber-500",
+                  short: "ENERGY",
                 },
                 {
                   icon: Apple,
@@ -665,6 +673,7 @@ export default function App() {
                   desc: "Photo-log plate waste, streaks, breakdowns. Cut kitchen waste.",
                   meta: "Streaks",
                   color: "bg-orange-500",
+                  short: "FOOD",
                 },
                 {
                   icon: Flower2,
@@ -672,6 +681,7 @@ export default function App() {
                   desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
                   meta: "New • v1.2+",
                   color: "bg-emerald-700",
+                  short: "PLANT",
                 },
                 {
                   icon: Smartphone,
@@ -679,64 +689,85 @@ export default function App() {
                   desc: "Same AI tools on Android, standalone APK like Instagram. No Expo Go, shares backend over LAN.",
                   meta: "New • v1.4.0",
                   color: "bg-indigo-600",
+                  short: "ANDROID",
                 },
                 {
                   icon: Database,
                   title: "History & Stats",
-                desc: "SQLite (no Postgres). Thumbnails, GET /stats/overview, History UI.",
-                meta: "New",
-                color: "bg-zinc-800",
-              },
-            ].map((f, idx) => (
-              <Card
-                key={f.title}
-                className="group grid md:grid-cols-12 gap-0 rounded-[24px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden hover:shadow-xl hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 p-0"
-              >
-                {/* image side like projects */}
-                <div className="md:col-span-5 relative h-[220px] sm:h-[260px] md:h-auto md:min-h-[280px] bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
-                  <div className={`absolute inset-0 ${f.color} opacity-[0.08]`} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <f.icon className="size-16 sm:size-20 text-zinc-900/10 dark:text-white/10" />
-                  </div>
-                  {/* subtle grid */}
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] bg-[size:24px_24px] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)]" />
-                  <img
-                    src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/600/400`}
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-[0.04] transition-opacity duration-700"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-4 left-4 flex items-center gap-2">
-                    <span className="flex size-8 items-center justify-center rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-sm text-xs font-bold">
-                      {String(idx + 1).padStart(2, "0")}
-                    </span>
-                    <span className="hidden sm:inline-flex rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur border px-2.5 py-1 text-[11px] font-bold tracking-wide">
-                      {f.meta}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4 sm:hidden">
-                    <span className="inline-flex rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur border px-2.5 py-1 text-[11px] font-bold tracking-wide">
-                      {f.meta}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                {/* content side */}
-                <div className="md:col-span-7 p-6 sm:p-8 flex flex-col">
-                  <div className={`hidden md:flex size-10 items-center justify-center rounded-xl text-white shadow-sm ${f.color}`}>
-                    <f.icon className="size-5" />
-                  </div>
-                  <h3 className="mt-0 md:mt-4 text-[18px] sm:text-[20px] font-bold tracking-tight leading-tight">{f.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{f.desc}</p>
-                  <div className="mt-6 flex items-center gap-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-3 py-1.5 text-xs font-medium group-hover:gap-2 transition-all">
-                      Explore <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
-                    </span>
-                    <span className="text-xs text-zinc-500">Sahil Virdi</span>
-                  </div>
-                </div>
-              </Card>
-            ))}
+                  desc: "SQLite (no Postgres). Thumbnails, GET /stats/overview, History UI.",
+                  meta: "New",
+                  color: "bg-zinc-800",
+                  short: "HISTORY",
+                },
+              ].map((f, idx) => {
+                const isActive = activeFeature === idx
+                return (
+                  <Card
+                    key={f.title}
+                    onMouseEnter={() => setActiveFeature(idx)}
+                    onMouseLeave={() => setActiveFeature(null)}
+                    onClick={() => setActiveFeature(isActive ? null : idx)}
+                    className={`group relative flex-shrink-0 snap-start rounded-[24px] border bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "w-[300px] sm:w-[360px] shadow-xl border-zinc-900 dark:border-zinc-700" : "w-[240px] sm:w-[260px] hover:w-[300px] sm:hover:w-[320px] border-zinc-200 dark:border-zinc-800 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700"} h-[380px] sm:h-[420px] flex flex-col`}
+                  >
+                    {/* big feature name like numbers in your projects - but with feature short name */}
+                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+                      <span
+                        className={`text-[64px] sm:text-[72px] font-black tracking-tighter leading-none select-none transition-all duration-700 ${isActive ? "scale-110 text-zinc-900 dark:text-white" : "scale-100 text-zinc-900/[0.06] dark:text-white/[0.06] group-hover:text-zinc-900/[0.08] dark:group-hover:text-white/[0.08]"}`}
+                        style={{ writingMode: "vertical-rl" } as React.CSSProperties}
+                      >
+                        {f.short}
+                      </span>
+                    </div>
+                    {/* image reveal on active/hover */}
+                    <div className={`absolute inset-0 transition-opacity duration-700 ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      <div className={`absolute inset-0 ${f.color} opacity-[0.04]`} />
+                      <img
+                        src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/400/600`}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover opacity-[0.06] group-hover:opacity-10 transition-opacity duration-700"
+                        loading="lazy"
+                      />
+                    </div>
+
+                    {/* top number + meta */}
+                    <div className="relative p-5 sm:p-6 flex-1 flex flex-col">
+                      <div className="flex items-start justify-between">
+                        <span className="flex size-8 items-center justify-center rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-sm text-xs font-bold">
+                          {String(idx + 1).padStart(2, "0")}
+                        </span>
+                        <span className={`flex size-8 items-center justify-center rounded-xl text-white shadow-sm ${f.color} transition-all duration-500 ${isActive ? "scale-110 rotate-3" : "group-hover:scale-105"}`}>
+                          <f.icon className="size-4" />
+                        </span>
+                      </div>
+
+                      {/* center large number fallback for non-active - show short name big */}
+                      <div className="flex-1 flex items-center justify-center sm:hidden">
+                        <span className={`text-[48px] font-black tracking-tighter ${isActive ? "text-zinc-900 dark:text-white" : "text-zinc-300 dark:text-zinc-700"}`}>{String(idx + 1).padStart(2, "0")}</span>
+                      </div>
+
+                      <div className="mt-auto">
+                        <h3 className="text-[15px] sm:text-[16px] font-bold leading-tight tracking-tight">{f.title}</h3>
+                        <p className={`mt-1.5 text-xs sm:text-[13px] leading-relaxed line-clamp-3 transition-all duration-500 ${isActive ? "text-zinc-600 dark:text-zinc-400 opacity-100" : "text-zinc-500 dark:text-zinc-500 opacity-80 group-hover:opacity-100"}`}>{f.desc}</p>
+                        <div className="mt-3 flex items-center justify-between">
+                          <span className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border px-2.5 py-1 text-[10px] font-bold tracking-wide">{f.meta}</span>
+                          <span className="flex items-center gap-1 text-xs font-medium">
+                            <span className="hidden sm:inline">Sahil Virdi</span>
+                            <ArrowUpRight className={`size-3.5 text-emerald-600 transition-all duration-300 ${isActive ? "translate-x-0 opacity-100" : "opacity-60 group-hover:translate-x-0.5"}`} />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                )
+              })}
+            </div>
+            <div className="mt-3 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+              <span className="hidden sm:inline-flex items-center gap-1.5">← Drag or hover to expand →</span>
+              <span className="sm:hidden">Tap to expand • Swipe</span>
+              <span className="hidden sm:inline-flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-zinc-900 dark:bg-white animate-pulse" /> Hover to grow
+              </span>
+            </div>
           </div>
         </div>
       </section>
