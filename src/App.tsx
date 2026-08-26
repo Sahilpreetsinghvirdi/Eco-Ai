@@ -93,127 +93,141 @@ export default function App() {
       .catch(() => {})
   }, [])
 
-  // features: smooth scroll via direct DOM — no React re-renders
+  // features: smooth scroll with momentum/lag via lerp animation loop
   useEffect(() => {
     let raf: number
     let lastIdx = -1
-    const onScroll = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => {
-        const section = featuresSectionRef.current
-        const track = featuresTrackRef.current
-        if (!section || !track) return
-        const rect = section.getBoundingClientRect()
-        const scrollable = section.offsetHeight - window.innerHeight
-        if (scrollable <= 0) return
-        const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1)
-        const maxX = track.scrollWidth - window.innerWidth + 32
-        if (maxX > 0) {
-          track.style.transform = `translateX(${-progress * maxX}px)`
+    let current = 0
+    let target = 0
+    const LERP = 0.08 // lower = more lag/momentum, higher = snappier
+
+    const animate = () => {
+      const section = featuresSectionRef.current
+      const track = featuresTrackRef.current
+      if (!section || !track) {
+        raf = requestAnimationFrame(animate)
+        return
+      }
+
+      // update target from scroll
+      const rect = section.getBoundingClientRect()
+      const scrollable = section.offsetHeight - window.innerHeight
+      if (scrollable > 0) {
+        target = Math.min(Math.max(-rect.top / scrollable, 0), 1)
+      }
+
+      // lerp current toward target — this IS the momentum/lag
+      current += (target - current) * LERP
+
+      // snap when very close
+      if (Math.abs(target - current) < 0.0005) current = target
+
+      const maxX = track.scrollWidth - window.innerWidth + 32
+      if (maxX > 0) {
+        track.style.transform = `translateX(${-current * maxX}px)`
+      }
+
+      const cards = track.children
+      const total = cards.length
+      const ci = Math.round(current * (total - 1))
+      if (ci !== lastIdx) {
+        lastIdx = ci
+        setCenterIdx(ci)
+      }
+
+      for (let i = 0; i < total; i++) {
+        const d = Math.abs(i - ci)
+        const card = cards[i] as HTMLElement
+        if (!card) continue
+        if (d === 0) {
+          card.style.width = "min(420px, 32vw)"
+          card.style.transform = "scale(1) translateZ(0)"
+          card.style.opacity = "1"
+          card.style.filter = "none"
+          card.style.zIndex = "10"
+        } else if (d === 1) {
+          card.style.width = "min(300px, 22vw)"
+          card.style.transform = "scale(0.88) translateZ(-40px)"
+          card.style.opacity = "0.55"
+          card.style.filter = "blur(1px)"
+          card.style.zIndex = "5"
+        } else if (d === 2) {
+          card.style.width = "min(220px, 16vw)"
+          card.style.transform = "scale(0.76) translateZ(-80px)"
+          card.style.opacity = "0.3"
+          card.style.filter = "blur(2px)"
+          card.style.zIndex = "2"
+        } else {
+          card.style.width = "min(180px, 13vw)"
+          card.style.transform = "scale(0.65) translateZ(-120px)"
+          card.style.opacity = "0.15"
+          card.style.filter = "blur(3px)"
+          card.style.zIndex = "1"
         }
-        const cards = track.children
-        const total = cards.length
-        const ci = Math.round(progress * (total - 1))
-        if (ci !== lastIdx) {
-          lastIdx = ci
-          setCenterIdx(ci)
-        }
-        for (let i = 0; i < total; i++) {
-          const d = Math.abs(i - ci)
-          const card = cards[i] as HTMLElement
-          if (!card) continue
+        card.style.transformOrigin = i < ci ? "right center" : "left center"
+
+        // image
+        const img = card.querySelector("img") as HTMLElement | null
+        if (img) {
           if (d === 0) {
-            card.style.width = "min(420px, 32vw)"
-            card.style.transform = "scale(1) translateZ(0)"
-            card.style.opacity = "1"
-            card.style.filter = "none"
-            card.style.zIndex = "10"
+            img.style.opacity = "0.75"
+            img.style.filter = "brightness(1.05) contrast(1.05)"
+            img.style.transform = "scale(1.06)"
           } else if (d === 1) {
-            card.style.width = "min(300px, 22vw)"
-            card.style.transform = "scale(0.88) translateZ(-40px)"
-            card.style.opacity = "0.55"
-            card.style.filter = "blur(1px)"
-            card.style.zIndex = "5"
-          } else if (d === 2) {
-            card.style.width = "min(220px, 16vw)"
-            card.style.transform = "scale(0.76) translateZ(-80px)"
-            card.style.opacity = "0.3"
-            card.style.filter = "blur(2px)"
-            card.style.zIndex = "2"
+            img.style.opacity = "0.2"
+            img.style.filter = "brightness(0.5) saturate(0.4)"
+            img.style.transform = "scale(1)"
           } else {
-            card.style.width = "min(180px, 13vw)"
-            card.style.transform = "scale(0.65) translateZ(-120px)"
-            card.style.opacity = "0.15"
-            card.style.filter = "blur(3px)"
-            card.style.zIndex = "1"
-          }
-          card.style.transformOrigin = i < ci ? "right center" : "left center"
-          // image brightness via DOM
-          const img = card.querySelector("img") as HTMLElement | null
-          if (img) {
-            if (d === 0) {
-              img.style.opacity = "0.75"
-              img.style.filter = "brightness(1.05) contrast(1.05)"
-              img.style.transform = "scale(1.06)"
-            } else if (d === 1) {
-              img.style.opacity = "0.2"
-              img.style.filter = "brightness(0.5) saturate(0.4)"
-              img.style.transform = "scale(1)"
-            } else {
-              img.style.opacity = "0.08"
-              img.style.filter = "brightness(0.3) saturate(0.2)"
-              img.style.transform = "scale(1)"
-            }
-          }
-          // text color via DOM
-          const h3 = card.querySelector("h3") as HTMLElement | null
-          const p = card.querySelector("p") as HTMLElement | null
-          const numBadge = card.querySelector("[data-num]") as HTMLElement | null
-          const metaBadge = card.querySelector("[data-meta]") as HTMLElement | null
-          if (h3) h3.style.color = d === 0 ? "#fff" : ""
-          if (p) p.style.color = d === 0 ? "rgba(255,255,255,0.8)" : ""
-          if (numBadge) {
-            if (d === 0) {
-              numBadge.style.background = "rgba(255,255,255,0.15)"
-              numBadge.style.borderColor = "rgba(255,255,255,0.25)"
-              numBadge.style.color = "#fff"
-              numBadge.style.backdropFilter = "blur(8px)"
-            } else {
-              numBadge.style.background = ""
-              numBadge.style.borderColor = ""
-              numBadge.style.color = ""
-              numBadge.style.backdropFilter = ""
-            }
-          }
-          if (metaBadge) {
-            if (d === 0) {
-              metaBadge.style.background = "rgba(255,255,255,0.12)"
-              metaBadge.style.borderColor = "rgba(255,255,255,0.2)"
-              metaBadge.style.color = "#fff"
-              metaBadge.style.backdropFilter = "blur(8px)"
-            } else {
-              metaBadge.style.background = ""
-              metaBadge.style.borderColor = ""
-              metaBadge.style.color = ""
-              metaBadge.style.backdropFilter = ""
-            }
-          }
-          // gradient overlay
-          const grad = card.querySelector("[data-grad]") as HTMLElement | null
-          if (grad) {
-            grad.style.opacity = d === 0 ? "1" : "0"
+            img.style.opacity = "0.08"
+            img.style.filter = "brightness(0.3) saturate(0.2)"
+            img.style.transform = "scale(1)"
           }
         }
-      })
+
+        // text
+        const h3 = card.querySelector("h3") as HTMLElement | null
+        const p = card.querySelector("p") as HTMLElement | null
+        const numBadge = card.querySelector("[data-num]") as HTMLElement | null
+        const metaBadge = card.querySelector("[data-meta]") as HTMLElement | null
+        if (h3) h3.style.color = d === 0 ? "#fff" : ""
+        if (p) p.style.color = d === 0 ? "rgba(255,255,255,0.8)" : ""
+        if (numBadge) {
+          if (d === 0) {
+            numBadge.style.background = "rgba(255,255,255,0.15)"
+            numBadge.style.borderColor = "rgba(255,255,255,0.25)"
+            numBadge.style.color = "#fff"
+            numBadge.style.backdropFilter = "blur(8px)"
+          } else {
+            numBadge.style.background = ""
+            numBadge.style.borderColor = ""
+            numBadge.style.color = ""
+            numBadge.style.backdropFilter = ""
+          }
+        }
+        if (metaBadge) {
+          if (d === 0) {
+            metaBadge.style.background = "rgba(255,255,255,0.12)"
+            metaBadge.style.borderColor = "rgba(255,255,255,0.2)"
+            metaBadge.style.color = "#fff"
+            metaBadge.style.backdropFilter = "blur(8px)"
+          } else {
+            metaBadge.style.background = ""
+            metaBadge.style.borderColor = ""
+            metaBadge.style.color = ""
+            metaBadge.style.backdropFilter = ""
+          }
+        }
+
+        // gradient
+        const grad = card.querySelector("[data-grad]") as HTMLElement | null
+        if (grad) grad.style.opacity = d === 0 ? "1" : "0"
+      }
+
+      raf = requestAnimationFrame(animate)
     }
-    window.addEventListener("scroll", onScroll, { passive: true })
-    window.addEventListener("resize", onScroll)
-    onScroll()
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener("scroll", onScroll)
-      window.removeEventListener("resize", onScroll)
-    }
+
+    raf = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(raf)
   }, [])
 
   // smooth sliding highlight - measures active pill and animates indicator with spring
