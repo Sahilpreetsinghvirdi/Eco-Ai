@@ -96,22 +96,27 @@ export default function App() {
 
   // features: scroll down moves horizontal strip, center card prominent, sides dimmed
   useEffect(() => {
+    let raf: number
     const onScroll = () => {
-      if (!featuresSectionRef.current || !featuresTrackRef.current) return
-      const rect = featuresSectionRef.current.getBoundingClientRect()
-      const scrollable = featuresSectionRef.current.offsetHeight - window.innerHeight
-      if (scrollable <= 0) return
-      const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1)
-      const maxX = featuresTrackRef.current.scrollWidth - window.innerWidth + 32
-      if (maxX > 0) {
-        featuresTrackRef.current.style.transform = `translateX(-${progress * maxX}px)`
-      }
-      setCenterIdx(Math.round(progress * 7))
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        if (!featuresSectionRef.current || !featuresTrackRef.current) return
+        const rect = featuresSectionRef.current.getBoundingClientRect()
+        const scrollable = featuresSectionRef.current.offsetHeight - window.innerHeight
+        if (scrollable <= 0) return
+        const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1)
+        const maxX = featuresTrackRef.current.scrollWidth - window.innerWidth + 32
+        if (maxX > 0) {
+          featuresTrackRef.current.style.transform = `translateX(-${progress * maxX}px)`
+        }
+        setCenterIdx(Math.round(progress * 7))
+      })
     }
     window.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onScroll)
     onScroll()
     return () => {
+      cancelAnimationFrame(raf)
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onScroll)
     }
@@ -652,7 +657,7 @@ export default function App() {
           </div>
 
           <div className="flex-1 flex items-center overflow-hidden">
-            <div ref={featuresTrackRef} className="flex gap-0 w-full will-change-transform" style={{ transform: "translateX(0px)" }}>
+            <div ref={featuresTrackRef} className="flex gap-0 w-full will-change-transform" style={{ transform: "translateX(0px)", transition: "transform 0.15s ease-out" }}>
               {[
                 {
                   icon: ScanSearch,
@@ -728,8 +733,9 @@ export default function App() {
                     key={f.title}
                     onMouseEnter={() => setActiveFeature(idx)}
                     onMouseLeave={() => setActiveFeature(null)}
-                    className={`group relative flex-shrink-0 rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none last:border-r-0 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "z-10" : ""}`}
+                    className={`group relative flex-shrink-0 rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none last:border-r-0 ${isActive ? "z-10" : ""}`}
                     style={{
+                      transition: "all 0.6s cubic-bezier(0.25,1,0.5,1)",
                       width: stepped === 0 ? "min(400px, 30vw)" : stepped === 1 ? "min(300px, 22vw)" : stepped === 2 ? "min(240px, 18vw)" : "min(200px, 14vw)",
                       height: "100%",
                       minHeight: "400px",
@@ -749,15 +755,23 @@ export default function App() {
                       </span>
                     </div>
 
-                    {/* image — smooth fade in on center */}
-                    <div className={`absolute inset-0 transition-all duration-700 ease-out ${stepped === 0 ? "opacity-100" : "opacity-0"}`}>
-                      <div className={`absolute inset-0 ${f.color} opacity-[0.03]`} />
+                    {/* image — bright when centered, dark when stepped */}
+                    <div className="absolute inset-0 pointer-events-none">
+                      <div className={`absolute inset-0 ${f.color} transition-opacity duration-700 ${stepped === 0 ? "opacity-[0.06]" : "opacity-[0.02]"}`} />
                       <img
-                        src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/500/700`}
+                        src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/600/800`}
                         alt=""
-                        className="absolute inset-0 w-full h-full object-cover opacity-[0.08] group-hover:opacity-[0.14] transition-opacity duration-700"
+                        className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out"
+                        style={{
+                          opacity: stepped === 0 ? 0.5 : stepped === 1 ? 0.15 : 0.06,
+                          filter: stepped === 0 ? "brightness(1.1) saturate(1.1)" : stepped === 1 ? "brightness(0.6) saturate(0.5)" : "brightness(0.3) saturate(0.2)",
+                          transform: stepped === 0 ? "scale(1.05)" : "scale(1)",
+                        } as React.CSSProperties}
                         loading="lazy"
                       />
+                      {stepped === 0 && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/20 to-transparent dark:from-zinc-900/70 dark:via-zinc-900/20" />
+                      )}
                     </div>
 
                     {/* content */}
