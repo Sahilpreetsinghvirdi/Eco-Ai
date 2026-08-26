@@ -53,6 +53,10 @@ export default function App() {
   const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const jumpingRef = useRef(false)
   const [release, setRelease] = useState<any>(null)
+  const [centerIdx, setCenterIdx] = useState(0)
+  const [activeFeature, setActiveFeature] = useState<number | null>(null)
+  const featuresSectionRef = useRef<HTMLElement>(null)
+  const featuresTrackRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -88,6 +92,29 @@ export default function App() {
       .then((r) => r.json())
       .then(setRelease)
       .catch(() => {})
+  }, [])
+
+  // features: scroll down moves horizontal strip, center card prominent, sides dimmed
+  useEffect(() => {
+    const onScroll = () => {
+      if (!featuresSectionRef.current || !featuresTrackRef.current) return
+      const rect = featuresSectionRef.current.getBoundingClientRect()
+      const scrollable = featuresSectionRef.current.offsetHeight - window.innerHeight
+      if (scrollable <= 0) return
+      const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1)
+      const maxX = featuresTrackRef.current.scrollWidth - window.innerWidth + 32
+      if (maxX > 0) {
+        featuresTrackRef.current.style.transform = `translateX(-${progress * maxX}px)`
+      }
+      setCenterIdx(Math.round(progress * 7))
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    onScroll()
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
   }, [])
 
   // smooth sliding highlight - measures active pill and animates indicator with spring
@@ -261,7 +288,7 @@ export default function App() {
       <section id="home" className="relative">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px]" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[1200px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-200/30 via-transparent to-transparent blur-3xl dark:from-emerald-900/20" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[1200px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-200/40 via-transparent to-transparent blur-3xl dark:from-zinc-800/30" />
         </div>
 
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
@@ -269,38 +296,38 @@ export default function App() {
             {/* left */}
             <div className="lg:col-span-6 xl:col-span-6 flex flex-col">
               <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-1.5 text-xs font-medium shadow-sm w-fit">
-                <span className="flex size-5 items-center justify-center rounded-full bg-emerald-600 text-white">
+                <span className="flex size-5 items-center justify-center rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900">
                   <Award className="size-3" />
                 </span>
                 <span className="hidden sm:inline">Official Entry • Indian Science Congress 2026</span>
                 <span className="sm:hidden">ISC 2026 • Official Entry</span>
                 <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-2 py-0.5 text-[10px] ml-1">
-                  Live <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Live <span className="size-1.5 rounded-full bg-zinc-400 dark:bg-zinc-600 animate-pulse" />
                 </span>
               </div>
 
               <h1 className="mt-6 text-[32px] sm:text-[42px] lg:text-[52px] xl:text-[58px] font-[800] tracking-[-0.04em] leading-[0.9]">
                 Waste,
                 <br />
-                <span className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 bg-clip-text text-transparent">understood.</span>
+                <span className="text-zinc-900 dark:text-white">understood.</span>
               </h1>
               <p className="mt-4 max-w-[560px] text-[15px] sm:text-[16px] leading-relaxed text-zinc-600 dark:text-zinc-400">
                 Photograph any garbage. <span className="font-semibold text-zinc-900 dark:text-zinc-100">Sustainability Hub</span> returns material
-                breakdown, toxins &amp; hazard, reuse ideas and <span className="font-semibold text-zinc-900 dark:text-zinc-100">exactly where to dispose it</span> — as a real Windows app.
+                breakdown, toxins &amp; hazard, reuse ideas and <span className="font-semibold text-zinc-900 dark:text-zinc-100">exactly where to dispose it</span> — Visily monochrome UI, real auth, Gemini/OpenAI chooser.
               </p>
-              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 px-3 py-1.5 text-xs font-medium text-emerald-800 dark:text-emerald-300">
-                <span className="hidden sm:inline">207 MB offline installer (fully offline, no WebView2) + 215 MB Android APK — one Release</span>
-                <span className="sm:hidden">207 MB offline + 215 MB APK — one Release</span>
-                <span className="hidden sm:inline-flex items-center gap-1 ml-1 rounded-full bg-emerald-600 text-white px-2 py-0.5 text-[10px]">v1.4.1</span>
+              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                <span className="hidden sm:inline">207 MB offline MSI + 110 MB Android APK — one Release, first launch Login → API Setup</span>
+                <span className="sm:hidden">207 MB MSI + 110 MB APK — Auth + API Setup</span>
+                <span className="hidden sm:inline-flex items-center gap-1 ml-1 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-2 py-0.5 text-[10px]">v1.4.13</span>
               </div>
               <p className="mt-2 max-w-[560px] text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
-                Works on any Windows 10/11 without internet + Android like Instagram. Also: small 3.8 MB online installer if you have internet.
+                Windows 10/11 fully offline + Android standalone APK like Instagram. Choose Gemini or OpenAI on first launch.
               </p>
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
                 <Button size="lg" className="rounded-full h-12 px-7 bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 text-[15px] shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300" onClick={() => go("download")}>
                   <Download className="size-4" /> Get the App
-                  <span className="ml-2 hidden sm:inline-flex items-center gap-1 text-xs opacity-60">v1.4.1 • Free <ArrowRight className="size-3" /></span>
+                  <span className="ml-2 hidden sm:inline-flex items-center gap-1 text-xs opacity-60">v1.4.13 • Free <ArrowRight className="size-3" /></span>
                 </Button>
                 <Button
                   size="lg"
@@ -314,11 +341,11 @@ export default function App() {
               </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-3 text-xs">
-                <div className="flex items-center gap-2 rounded-full border bg-white dark:bg-zinc-900 px-3 py-1.5">
-                  <span className="size-2 rounded-full bg-emerald-500 animate-pulse" /> Gemini 3.6 Flash • ~10s
+                <div className="flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-1.5">
+                  <span className="size-2 rounded-full bg-zinc-900 dark:bg-white animate-pulse" /> Gemini / OpenAI chooser
                 </div>
-                <div className="flex items-center gap-2 rounded-full border bg-white dark:bg-zinc-900 px-3 py-1.5">
-                  <Monitor className="size-3.5" /> Tauri v2 • .exe + .msi
+                <div className="flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-3 py-1.5">
+                  <Monitor className="size-3.5" /> Tauri v2 + Expo 54
                 </div>
                 <div className="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400">
                   <div className="flex -space-x-1">
@@ -326,7 +353,7 @@ export default function App() {
                     <img src="https://i.pravatar.cc/24?img=2" alt="" className="size-6 rounded-full border-2 border-white dark:border-zinc-900" />
                     <img src="https://i.pravatar.cc/24?img=3" alt="" className="size-6 rounded-full border-2 border-white dark:border-zinc-900" />
                   </div>
-                  <span className="text-xs">Trusted by 200+ testers</span>
+                  <span className="text-xs">Visily monochrome UI</span>
                 </div>
               </div>
 
@@ -348,7 +375,7 @@ export default function App() {
             {/* right app window */}
             <div className="lg:col-span-6 xl:col-span-6 relative lg:pl-6">
               <div className="relative mx-auto w-full max-w-[600px] lg:max-w-none">
-                <div className="absolute -inset-4 -z-10 rounded-[32px] bg-gradient-to-br from-emerald-200/40 via-teal-200/20 to-zinc-200/40 blur-2xl dark:from-emerald-900/20 dark:via-teal-900/10 dark:to-zinc-800/20" />
+                <div className="absolute -inset-4 -z-10 rounded-[32px] bg-gradient-to-br from-zinc-200/40 via-zinc-100/20 to-zinc-200/40 blur-2xl dark:from-zinc-800/30 dark:via-zinc-900/10 dark:to-zinc-700/20" />
                 <div className="overflow-hidden rounded-[20px] sm:rounded-[24px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.3)]">
                   {/* titlebar */}
                   <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900 px-3 sm:px-4 py-3 backdrop-blur">
@@ -363,7 +390,7 @@ export default function App() {
                           <Leaf className="size-3.5" />
                         </span>
                         Sustainability Hub
-                        <span className="hidden sm:inline-flex rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 text-[10px] font-bold">● Live</span>
+                        <span className="hidden sm:inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 text-[10px] font-bold">● Live</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -506,7 +533,7 @@ export default function App() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-[720px]">
             <div className="inline-flex items-center gap-2 rounded-full border bg-zinc-50 dark:bg-zinc-900 px-3 py-1 text-xs font-medium">
-              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" /> How it works
+              <span className="size-2 rounded-full bg-zinc-900 dark:bg-white animate-pulse" /> How it works
             </div>
             <h2 className="mt-3 text-[26px] sm:text-[32px] lg:text-[36px] font-bold tracking-tight leading-[0.95]">One photo. Every answer.</h2>
             <p className="mt-3 text-[14px] sm:text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-400">
@@ -607,99 +634,163 @@ export default function App() {
         </div>
       </section>
 
-      {/* FEATURES bento */}
-      <section id="features" className="py-10 sm:py-16 bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
-        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-zinc-900 border px-3 py-1 text-xs font-medium">
-                <Layers className="size-3.5" /> Platform
+      {/* FEATURES — horizontal scroll, center prominent, sides dimmed */}
+      <section ref={featuresSectionRef} id="features" className="relative h-[220vh] sm:h-[260vh] bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
+        <div className="sticky top-[68px] h-[calc(100vh-68px)] min-h-[500px] flex flex-col overflow-hidden" style={{ perspective: "1200px" } as React.CSSProperties}>
+          <div className="mx-auto max-w-[1280px] w-full px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-3 py-1 text-xs font-medium">
+                  <Layers className="size-3.5" /> Platform
+                </div>
+                <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">Scroll through the hub.</h2>
               </div>
-              <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">Four pillars. One hub.</h2>
+              <p className="max-w-[400px] text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                Scroll down to move horizontally. Center card is sharp &amp; full — sides fall back, dimmed in steps.
+              </p>
             </div>
-            <p className="max-w-[520px] text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-              Analyzer is the hero. The hub wraps it in daily life — carbon, energy, food — all native, all offline-capable, all ISC-ready.
-            </p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                span: "sm:col-span-2 lg:col-span-2",
-                icon: ScanSearch,
-                title: "AI Waste Analyzer",
-                desc: "Upload or webcam → Gemini vision → pie, hazard gauge, toxins, uses, alternatives, disposal + history. ~10s, structured JSON, 180s timeout.",
-                meta: "Gemini 3.6 Flash • Live",
-                color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
-              },
-              {
-                icon: Sprout,
-                title: "AgriSense",
-                desc: "Photograph any fertilizer; get NPK, suitability verdict 0–100 for crop/soil/stage, dosage, risks & alternatives.",
-                meta: "Fertilizer • NPK",
-                color: "bg-green-600",
-              },
-              {
-                icon: BarChart3,
-                title: "Dashboard",
-                desc: "One glance: carbon, energy, waste, streaks, area charts. Theme-aware (Porcelain/Midnight) with anti-flash.",
-                meta: "Charts • Badges",
-                color: "bg-violet-600",
-              },
-              {
-                icon: Leaf,
-                title: "Carbon Tracker",
-                desc: "Scan receipts or log manually. Auto-categorized kg CO₂e with weekly trends.",
-                meta: "Receipt → CO₂e",
-                color: "bg-emerald-600",
-              },
-              {
-                icon: Zap,
-                title: "Energy Monitor",
-                desc: "Parse bills (kWh/therms/gal), run audits with saving tips.",
-                meta: "Bill parse",
-                color: "bg-amber-500",
-              },
-              {
-                icon: Apple,
-                title: "Food Waste",
-                desc: "Photo-log plate waste, streaks, breakdowns. Cut kitchen waste.",
-                meta: "Streaks",
-                color: "bg-orange-500",
-              },
-              {
-                icon: Flower2,
-                title: "PlantSense",
-                desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
-                meta: "New • v1.2+",
-                color: "bg-emerald-700",
-              },
-              {
-                icon: Smartphone,
-                title: "Android Companion",
-                desc: "Same AI tools on Android, standalone APK like Instagram. No Expo Go, shares backend over LAN.",
-                meta: "New • v1.4.0",
-                color: "bg-indigo-600",
-              },
-              {
-                icon: Database,
-                title: "History & Stats",
-                desc: "SQLite (no Postgres). Thumbnails, GET /stats/overview, History UI.",
-                meta: "New",
-                color: "bg-zinc-800",
-              },
-            ].map((f) => (
-              <Card key={f.title} className={`rounded-[20px] p-5 sm:p-6 border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-all hover:-translate-y-0.5 ${f.span || ""}`}>
-                <div className={`flex size-10 items-center justify-center rounded-xl text-white ${f.color}`}>
-                  <f.icon className="size-5" />
-                </div>
-                <div className="mt-4 flex items-center gap-2">
-                  <div className="text-[15px] font-bold">{f.title}</div>
-                  <span className="rounded-full bg-zinc-100 dark:bg-zinc-800 border px-2 py-0.5 text-[10px] font-bold tracking-wide">{f.meta}</span>
-                </div>
-                <div className="mt-1.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{f.desc}</div>
-              </Card>
-            ))}
+          <div className="flex-1 flex items-center overflow-hidden">
+            <div ref={featuresTrackRef} className="flex gap-0 w-full will-change-transform" style={{ transform: "translateX(0px)" }}>
+              {[
+                {
+                  icon: ScanSearch,
+                  title: "AI Waste Analyzer",
+                  desc: "Upload or webcam → Gemini vision → pie, hazard gauge, toxins, uses, alternatives, disposal. ~10s, structured JSON.",
+                  meta: "Gemini 2.0 Flash • Live",
+                  color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
+                  short: "WASTE",
+                },
+                {
+                  icon: Sprout,
+                  title: "AgriSense",
+                  desc: "Photograph fertilizer → NPK, suitability verdict 0–100 for crop/soil/stage, dosage, risks & alternatives.",
+                  meta: "Fertilizer • NPK",
+                  color: "bg-green-600",
+                  short: "AGRI",
+                },
+                {
+                  icon: Flower2,
+                  title: "PlantSense",
+                  desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
+                  meta: "Plant AI",
+                  color: "bg-emerald-700",
+                  short: "PLANT",
+                },
+                {
+                  icon: Leaf,
+                  title: "Carbon Tracker",
+                  desc: "Scan receipts or log manually. Auto-categorized kg CO₂e with weekly trends.",
+                  meta: "Receipt → CO₂e",
+                  color: "bg-emerald-600",
+                  short: "CARBON",
+                },
+                {
+                  icon: Zap,
+                  title: "Energy Monitor",
+                  desc: "Parse bills (kWh/therms/gal), run audits with saving tips.",
+                  meta: "Bill parse",
+                  color: "bg-amber-500",
+                  short: "ENERGY",
+                },
+                {
+                  icon: Apple,
+                  title: "Food Waste",
+                  desc: "Photo-log plate waste, streaks, breakdowns. Cut kitchen waste.",
+                  meta: "Streaks",
+                  color: "bg-orange-500",
+                  short: "FOOD",
+                },
+                {
+                  icon: Smartphone,
+                  title: "Android Companion",
+                  desc: "Same AI tools on Android — standalone APK like Instagram. Expo 54, 4-tab Visily UI, auth + API setup.",
+                  meta: "Visily • v1.4.13",
+                  color: "bg-indigo-600",
+                  short: "MOBILE",
+                },
+                {
+                  icon: Database,
+                  title: "Auth & History",
+                  desc: "Login → API Setup (Gemini/OpenAI chooser) → Avatar & Profile. SQLite history with thumbnails, stats.",
+                  meta: "Auth • SQLite",
+                  color: "bg-zinc-800",
+                  short: "AUTH",
+                },
+              ].map((f, idx) => {
+                const isActive = activeFeature === idx
+                const dist = Math.abs(idx - centerIdx)
+                const stepped = Math.min(dist, 3)
+
+                return (
+                  <Card
+                    key={f.title}
+                    onMouseEnter={() => setActiveFeature(idx)}
+                    onMouseLeave={() => setActiveFeature(null)}
+                    className={`group relative flex-shrink-0 rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none last:border-r-0 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "z-10" : ""}`}
+                    style={{
+                      width: stepped === 0 ? "min(400px, 30vw)" : stepped === 1 ? "min(300px, 22vw)" : stepped === 2 ? "min(240px, 18vw)" : "min(200px, 14vw)",
+                      height: "100%",
+                      minHeight: "400px",
+                      transform: stepped === 0 ? "scale(1) translateZ(0)" : stepped === 1 ? "scale(0.92) translateZ(-30px)" : stepped === 2 ? "scale(0.82) translateZ(-60px)" : "scale(0.72) translateZ(-90px)",
+                      opacity: stepped === 0 ? 1 : stepped === 1 ? 0.65 : stepped === 2 ? 0.4 : 0.25,
+                      filter: stepped === 0 ? "none" : stepped === 1 ? "blur(0.5px)" : stepped === 2 ? "blur(1px)" : "blur(2px)",
+                      transformOrigin: idx < centerIdx ? "right center" : "left center",
+                    } as React.CSSProperties}
+                  >
+                    {/* big vertical short name — ghost */}
+                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+                      <span
+                        className={`font-black tracking-tighter leading-none select-none transition-all duration-700 ease-out ${stepped === 0 ? "text-[64px] sm:text-[76px] text-zinc-900/[0.06] dark:text-white/[0.06]" : "text-[48px] sm:text-[56px] text-zinc-900/[0.04] dark:text-white/[0.04]"}`}
+                        style={{ writingMode: "vertical-rl" } as React.CSSProperties}
+                      >
+                        {f.short}
+                      </span>
+                    </div>
+
+                    {/* image — smooth fade in on center */}
+                    <div className={`absolute inset-0 transition-all duration-700 ease-out ${stepped === 0 ? "opacity-100" : "opacity-0"}`}>
+                      <div className={`absolute inset-0 ${f.color} opacity-[0.03]`} />
+                      <img
+                        src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/500/700`}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover opacity-[0.08] group-hover:opacity-[0.14] transition-opacity duration-700"
+                        loading="lazy"
+                      />
+                    </div>
+
+                    {/* content */}
+                    <div className="relative p-5 sm:p-6 flex flex-col h-full">
+                      <div className="flex items-start justify-between">
+                        <span className={`flex size-8 items-center justify-center rounded-full border shadow-sm text-xs font-bold bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 ${stepped === 0 ? "" : "scale-90"}`}>
+                          {String(idx + 1).padStart(2, "0")}
+                        </span>
+                        <span className={`flex size-8 items-center justify-center rounded-xl text-white shadow-sm ${f.color} transition-transform duration-500 ${stepped === 0 ? "scale-110 rotate-3" : "scale-90"}`}>
+                          <f.icon className="size-4" />
+                        </span>
+                      </div>
+
+                      <div className="mt-auto">
+                        <h3 className={`font-bold leading-tight tracking-tight transition-all duration-500 ${stepped === 0 ? "text-[17px]" : "text-[14px]"}`}>{f.title}</h3>
+                        <p className={`mt-2 text-[13px] leading-relaxed transition-all duration-500 ${stepped === 0 ? "text-zinc-600 dark:text-zinc-400 opacity-100 line-clamp-4" : "text-zinc-500 dark:text-zinc-500 opacity-70 line-clamp-2"}`}>{f.desc}</p>
+                        <div className="mt-3">
+                          <span className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[10px] font-bold tracking-wide">{f.meta}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-[1280px] w-full px-4 sm:px-6 lg:px-8 py-3 shrink-0 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="hidden sm:inline">← Scroll down to move →</span>
+            <span className="sm:hidden">Scroll ↓</span>
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-zinc-900 dark:bg-white animate-pulse" /> {centerIdx + 1} / 8
+            </span>
           </div>
         </div>
       </section>
@@ -720,15 +811,15 @@ export default function App() {
                 <code className="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs break-all">start-app.pyw</code> (windowless pythonw).
               </p>
 
-              {/* dual download - v1.4.1 offline */}
+              {/* dual download - v1.4.13 */}
               {(() => {
-                const msi = (release as any)?.assets?.find((a: any) => a.name === "Sustainability-Hub-v1.4.1-offline.msi") || (release as any)?.assets?.find((a: any) => a.name.endsWith(".msi"))
+                const msi = (release as any)?.assets?.find((a: any) => a.name.endsWith(".msi"))
                 const apk = (release as any)?.assets?.find((a: any) => a.name.endsWith(".apk"))
-                const tag = (release as any)?.tag_name || "v1.4.1"
-                const msiUrl = msi?.browser_download_url || "https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.1/Sustainability-Hub-v1.4.1-offline.msi"
-                const apkUrl = apk?.browser_download_url || "https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.1/SustainabilityHub-mobile-v1.0.4.apk"
+                const tag = (release as any)?.tag_name || "v1.4.13"
+                const msiUrl = msi?.browser_download_url || "https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.13/Sustainability.Hub_1.4.13_x64_en-US.msi"
+                const apkUrl = apk?.browser_download_url || "https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.13/SustainabilityHub-v1.4.13.apk"
                 const msiSize = msi ? `${(msi.size / 1024 / 1024).toFixed(0)} MB` : "207 MB"
-                const apkSize = apk ? `${(apk.size / 1024 / 1024).toFixed(0)} MB` : "215 MB"
+                const apkSize = apk ? `${(apk.size / 1024 / 1024).toFixed(0)} MB` : "110 MB"
                 return (
                   <>
                     <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-3 py-1 text-xs font-bold">
@@ -745,15 +836,15 @@ export default function App() {
                             <div className="text-xs opacity-70">{tag} • {msiSize} MSI • Fully offline</div>
                           </div>
                         </div>
-                        <div className="mt-3 rounded-xl bg-white/10 dark:bg-zinc-900/10 border border-white/10 p-2.5 font-mono text-[11px] break-all">Sustainability-Hub-v1.4.1-offline.msi</div>
+                        <div className="mt-3 rounded-xl bg-white/10 dark:bg-zinc-900/10 border border-white/10 p-2.5 font-mono text-[11px] break-all">Sustainability.Hub_1.4.13_x64_en-US.msi</div>
                         <Button size="sm" className="mt-3 w-full rounded-full bg-white text-zinc-900 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800" onClick={() => window.open(msiUrl, "_blank")}>
                           <Download className="size-4" /> Download for Windows
                         </Button>
-                        <div className="mt-2 text-[11px] leading-relaxed opacity-70">Bundles WebView2 — no internet needed. <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.0/Sustainability-Hub-v1.4.0-setup.msi" className="underline">Small 3.8 MB online installer</a> also available.</div>
+                        <div className="mt-2 text-[11px] leading-relaxed opacity-70">Bundles WebView2 — fully offline, no internet needed.</div>
                       </Card>
                       <Card className="rounded-2xl p-4 border-zinc-200 dark:border-zinc-800">
                         <div className="flex items-center gap-3">
-                          <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-600 text-white">
+                          <span className="flex size-9 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
                             <Smartphone className="size-5" />
                           </span>
                           <div>
@@ -761,11 +852,11 @@ export default function App() {
                             <div className="text-xs text-zinc-500">APK • {apkSize} • Standalone</div>
                           </div>
                         </div>
-                        <div className="mt-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border p-2.5 font-mono text-[11px] break-all">SustainabilityHub-mobile-v1.0.4.apk</div>
+                        <div className="mt-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border p-2.5 font-mono text-[11px] break-all">SustainabilityHub-v1.4.13.apk</div>
                         <Button size="sm" className="mt-3 w-full rounded-full" onClick={() => window.open(apkUrl, "_blank")}>
                           <Smartphone className="size-4" /> Download for Android
                         </Button>
-                        <div className="mt-2 text-[11px] leading-relaxed text-zinc-500">Install like Instagram — allow “Install unknown apps”.</div>
+                        <div className="mt-2 text-[11px] leading-relaxed text-zinc-500">Standalone APK — no Expo Go. First launch: Login → API Setup. Physical device needs LAN IP.</div>
                       </Card>
                     </div>
 
@@ -818,7 +909,7 @@ export default function App() {
                   </div>
                   <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900 border p-3">
                     <div className="text-[11px] text-zinc-500">AI</div>
-                    <div className="font-medium">Gemini in .env</div>
+                    <div className="font-medium">Gemini or OpenAI</div>
                   </div>
                   <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900 border p-3">
                     <div className="text-[11px] text-zinc-500">RAM</div>
@@ -835,16 +926,16 @@ export default function App() {
         </div>
       </section>
 
-      {/* CHANGELOG - v1.4.1 */}
+      {/* CHANGELOG */}
       <section id="changelog" className="py-10 sm:py-16 bg-white dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-[720px]">
-            <div className="inline-flex items-center gap-2 rounded-full border bg-zinc-50 dark:bg-zinc-900 px-3 py-1 text-xs font-medium">
+            <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 text-xs font-medium">
               <FileText className="size-3.5" /> Changelog
             </div>
             <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">What shipped.</h2>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-              Latest is <span className="font-semibold text-zinc-900 dark:text-zinc-100">{(release as any)?.tag_name || "v1.4.1"}</span> — single Release with both MSI + APK.{" "}
+              Latest is <span className="font-semibold text-zinc-900 dark:text-zinc-100">{(release as any)?.tag_name || "v1.4.13"}</span> — single Release with both MSI + APK.{" "}
               <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/latest" target="_blank" rel="noreferrer" className="underline">
                 View on GitHub
               </a>
@@ -853,32 +944,53 @@ export default function App() {
           <div className="mt-8 grid gap-4">
             {[
               {
-                ver: "v1.4.1",
-                date: "2026-08-26",
-                badge: "Latest • Offline",
-                color: "bg-emerald-600",
-                items: ["Fully offline Windows — 207 MB MSI bundles WebView2 (no internet needed)", "Same Android APK 215 MB in one Release", "Tauri windows.webviewInstallMode: offlineInstaller"],
+                ver: "v1.4.13",
+                date: "2026-08-27",
+                badge: "Latest • API Setup",
+                color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
+                items: ["Key actually configures backend via POST /settings/ai (Gemini or OpenAI)", "baseUrl 10.0.2.2 (emulator), LAN IP for physical device", "Diagnose offline message distinguishes 'key saved, backend not reachable' vs 'add API key'"],
               },
               {
-                ver: "v1.4.0",
-                date: "2026-08-25",
-                badge: "First combined",
-                color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
-                items: ["First combined Release: small MSI 3.8 MB + APK 215 MB in one", "Expo 54, Waste/Agri/PlantSense + Carbon/Energy/Food", "Fixed UTF-16 asset corruption, worklets 0.5.1"],
+                ver: "v1.4.12",
+                date: "2026-08-27",
+                badge: "Navbar fix",
+                color: "bg-zinc-700",
+                items: ["Home now inside tabs — navbar shows on Home screen", "Plant/Agri/Waste offline mock fallback so Diagnose always works"],
+              },
+              {
+                ver: "v1.4.11",
+                date: "2026-08-27",
+                badge: "Crash fix",
+                color: "bg-red-600",
+                items: ["Fixed isConfigured() TypeError on login", "_layout hasHydrated guard, TopNavigation Modal → Alert"],
+              },
+              {
+                ver: "v1.4.10",
+                date: "2026-08-27",
+                badge: "All wired",
+                color: "bg-zinc-600",
+                items: ["Every button functional, Export CSV via expo-file-system", "Schedule real, toggles functional"],
+              },
+              {
+                ver: "v1.4.8",
+                date: "2026-08-26",
+                badge: "Visily",
+                color: "bg-violet-600",
+                items: ["Visily monochrome redesign: Dashboard, AI Overview, Waste/Agri/Plant", "4-tab bar (Home/AI/Stats/Settings), hamburger menu, zero-data fresh install"],
+              },
+              {
+                ver: "v1.4.1",
+                date: "2026-08-26",
+                badge: "Offline",
+                color: "bg-emerald-600",
+                items: ["Fully offline 207 MB MSI bundles WebView2", "Same Release with 110 MB Android APK"],
               },
               {
                 ver: "v1.3.0",
                 date: "2026-08-24",
-                badge: "MSI only",
-                color: "bg-zinc-600",
-                items: ["Auto-open results, full-res 1600px, harmful red grading (0/100)", "AI keys settings, small MSI downloadBootstrapper 3.8 MB"],
-              },
-              {
-                ver: "v1.2.0",
-                date: "2026-08-23",
-                badge: "Memory",
-                color: "bg-violet-600",
-                items: ["Persistent scan history with thumbnails", "Mid-analysis navigation survival", "All pages load real persisted data"],
+                badge: "Desktop",
+                color: "bg-zinc-500",
+                items: ["Auto-open results, full-res 1600px, harmful red grading", "AI keys settings, small MSI 3.8 MB"],
               },
             ].map((r) => (
               <Card key={r.ver} className="rounded-2xl p-5 border-zinc-200 dark:border-zinc-800 flex gap-4">
@@ -916,27 +1028,35 @@ export default function App() {
             {[
               {
                 q: "Why 207 MB vs 3.8 MB?",
-                a: "3.8 MB is an online installer — if WebView2 is missing (common on Win 10), it downloads ~150 MB on first install. 207 MB bundles WebView2, so it installs fully offline. Both contain the complete app. After install, the app runs offline; only the AI analyzers need internet for Gemini.",
+                a: "3.8 MB was an online installer — if WebView2 was missing, it downloaded ~150 MB on first install. 207 MB bundles WebView2, so it installs fully offline. Both are retired now; the current release is the 207 MB offline MSI.",
+              },
+              {
+                q: "I added API key but still offline?",
+                a: "Key is saved locally in MMKV + POST to backend at 10.0.2.2. If that backend isn't reachable (physical device), set your LAN IP in mobile/src/constants/config.ts and run uvicorn --host 0.0.0.0.",
               },
               {
                 q: "SmartScreen / antivirus warns?",
-                a: "The MSI/APK are unsigned (student build). On Windows: “More info → Run anyway”. Antivirus may flag unsigned installers — allow it. Android: enable “Install unknown apps” for your browser, like with Instagram APK.",
+                a: "The MSI/APK are unsigned (student build). On Windows: 'More info → Run anyway'. Antivirus may flag unsigned installers — allow it. Android: enable 'Install unknown apps' for your browser.",
               },
               {
-                q: "Backend port 8000 conflict?",
-                a: "The desktop app auto-starts FastAPI on :8000 + Vite on :1420 via start-app.pyw (windowless). If 8000 is busy, close the other app or change backend/.env PORT. Logs at start-app.log.",
+                q: "Navbar not showing on Home?",
+                a: "Fixed in v1.4.12. The app/index.tsx Redirect was changed to /(tabs) so the bottom bar now shows on the Home screen.",
+              },
+              {
+                q: "Diagnose says 'network request failed'?",
+                a: "Now shows offline mock fallback when backend is unreachable. If key is saved, it shows 'backend not reachable' instead of crashing. Works without backend for diagnosis.",
               },
               {
                 q: "Camera not working?",
-                a: "Desktop: allow camera permission in Windows Settings → Privacy → Camera and in the WebView. Android: grant Camera permission when prompted. Try gallery upload if camera fails.",
+                a: "Desktop: allow camera in Windows Settings → Privacy → Camera. Android: grant Camera permission when prompted. Try gallery upload if camera fails.",
               },
               {
-                q: "Gemini API key?",
-                a: "Put your key in backend/.env as GEMINI_API_KEY (get one at aistudio.google.com). Never put it in the website — all AI runs locally in the installed app. Without a key, trackers still work offline.",
+                q: "Gemini vs OpenAI?",
+                a: "Choose on first launch in API Setup. Get Gemini key at aistudio.google.com, OpenAI key at platform.openai.com. Keys stored in MMKV on device + backend .env. Never exposed in website code.",
               },
               {
                 q: "Receipt OCR / Food photo accuracy?",
-                a: "Receipt/bill OCR is currently simulated with plausible extraction — real OCR is on the roadmap. Food waste uses on-device color clustering (k-means in Lab), not Gemini — framed as smart estimation. Emission factors are published averages.",
+                a: "Receipt/bill OCR is manual entry (trackers). Food waste uses heuristic + Gemini if configured, offline mock if backend unreachable — framed as smart estimation + AI. Emission factors are published averages.",
               },
             ].map((f) => (
               <Card key={f.q} className="rounded-2xl p-5 border-zinc-200 dark:border-zinc-800">
@@ -963,8 +1083,8 @@ export default function App() {
                 .exe, live AI and daily GitHub proof.
               </p>
               <div className="mt-6 grid sm:grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-white dark:bg-zinc-900 border p-4 flex gap-3">
-                  <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-600 text-white shrink-0">
+                <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 flex gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shrink-0">
                     <Sprout className="size-5" />
                   </span>
                   <div>
@@ -972,7 +1092,7 @@ export default function App() {
                     <div className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">One correct bin × 1.4B people = gigatonnes avoided.</div>
                   </div>
                 </div>
-                <div className="rounded-2xl bg-white dark:bg-zinc-900 border p-4 flex gap-3">
+                <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 flex gap-3">
                   <span className="flex size-9 items-center justify-center rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shrink-0">
                     <FlaskConical className="size-5" />
                   </span>
@@ -1071,9 +1191,9 @@ export default function App() {
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-[11px]">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 px-2.5 py-1 text-emerald-700 dark:text-emerald-300">
-                Latest: {(release as any)?.tag_name || "v1.4.1"}
-                <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/tag/v1.4.1" target="_blank" rel="noreferrer" className="underline">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-zinc-700 dark:text-zinc-300">
+                Latest: {(release as any)?.tag_name || "v1.4.13"}
+                <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/latest" target="_blank" rel="noreferrer" className="underline">
                   Release
                 </a>
                 <span className="opacity-60">•</span>
@@ -1081,7 +1201,7 @@ export default function App() {
                   Download
                 </a>
               </span>
-              <span className="text-zinc-400">207 MB MSI (offline) + 215 MB APK — one Release</span>
+              <span className="text-zinc-400">207 MB MSI (offline) + 110 MB APK — one Release</span>
             </div>
           </div>
         </div>
