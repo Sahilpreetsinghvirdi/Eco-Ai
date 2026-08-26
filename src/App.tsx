@@ -56,6 +56,7 @@ export default function App() {
   const [activeFeature, setActiveFeature] = useState<number | null>(null)
   const featuresSectionRef = useRef<HTMLElement>(null)
   const featuresTrackRef = useRef<HTMLDivElement>(null)
+  const [centerIdx, setCenterIdx] = useState(0)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -122,7 +123,7 @@ export default function App() {
     }
   }, [active])
 
-  // features: scroll down to scroll horizontal, only after last box does page continue
+  // features: scroll down to scroll horizontal, only after last box does page continue + 3D dim
   useEffect(() => {
     const onScroll = () => {
       if (!featuresSectionRef.current || !featuresTrackRef.current) return
@@ -136,6 +137,10 @@ export default function App() {
       if (maxX > 0) {
         featuresTrackRef.current.style.transform = `translateX(-${progress * maxX}px)`
       }
+      // center index for 3D dim
+      const total = 8
+      const idx = Math.round(progress * (total - 1))
+      setCenterIdx(idx)
     }
     window.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onScroll)
@@ -636,7 +641,7 @@ export default function App() {
 
       {/* FEATURES - pinned horizontal, scroll down to go horizontal, long vertical cards */}
       <section ref={featuresSectionRef} id="features" className="relative h-[260vh] sm:h-[300vh] bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
-        <div className="sticky top-[68px] h-[calc(100vh-68px)] min-h-[520px] flex flex-col overflow-hidden">
+        <div className="sticky top-[68px] h-[calc(100vh-68px)] min-h-[520px] flex flex-col overflow-hidden" style={{ perspective: "1400px", perspectiveOrigin: "center center" } as React.CSSProperties}>
           <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 flex flex-col lg:flex-row lg:items-end justify-between gap-3 sm:gap-4 shrink-0">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-zinc-900 border px-3 py-1 text-xs font-medium">
@@ -719,13 +724,24 @@ export default function App() {
                 },
               ].map((f, idx) => {
                 const isActive = activeFeature === idx
+                const isCenter = idx === centerIdx
+                const dist = Math.abs(idx - centerIdx)
+                const isDimmed = !isActive && dist > 0
                 return (
                   <Card
                     key={f.title}
                     onMouseEnter={() => setActiveFeature(idx)}
                     onMouseLeave={() => setActiveFeature(null)}
                     onClick={() => setActiveFeature(isActive ? null : idx)}
-                    className={`group relative flex-shrink-0 snap-start rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none transition-all duration-500 ease-out ${isActive ? "w-[340px] sm:w-[400px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.04)]" : "w-[260px] sm:w-[280px] hover:w-[300px] sm:hover:w-[320px]"} h-[68vh] sm:h-[72vh] min-h-[480px] max-h-[560px] flex flex-col last:border-r-0`}
+                    className={`group relative flex-shrink-0 snap-start rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isActive ? "w-[340px] sm:w-[400px] shadow-xl z-10" : isCenter ? "w-[300px] sm:w-[340px] shadow-lg z-[5]" : "w-[240px] sm:w-[260px] hover:w-[280px] sm:hover:w-[300px]"} h-[68vh] sm:h-[72vh] min-h-[480px] max-h-[560px] flex flex-col last:border-r-0`}
+                    style={
+                      {
+                        transform: `perspective(1000px) ${isDimmed ? (idx < centerIdx ? "rotateY(12deg)" : "rotateY(-12deg)") : "rotateY(0deg)"} translateZ(${isDimmed ? (dist === 1 ? "-24px" : "-48px") : "0px"}) scale(${isActive ? 1 : isCenter ? 1 : dist === 1 ? 0.96 : 0.92})`,
+                        transformOrigin: idx < centerIdx ? "right center" : "left center",
+                        filter: `brightness(${isActive || isCenter ? 1 : dist === 1 ? 0.88 : 0.72})`,
+                        opacity: isActive || isCenter ? 1 : dist === 1 ? 0.85 : 0.7,
+                      } as React.CSSProperties
+                    }
                   >
                     {/* big feature name like numbers - sharp, no gap */}
                     <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
