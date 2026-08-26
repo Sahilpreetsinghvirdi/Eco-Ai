@@ -17,7 +17,6 @@ import {
   BarChart3,
   Database,
   FileText,
-  Package,
   ScanSearch,
   ArrowUpRight,
   Award,
@@ -29,6 +28,9 @@ import {
   Sparkles,
   Layers,
   Monitor,
+  Smartphone,
+  Flower2,
+  Bug,
   ClipboardCheck,
 } from "lucide-react"
 
@@ -50,6 +52,7 @@ export default function App() {
   const [desktopIndicator, setDesktopIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const jumpingRef = useRef(false)
+  const [release, setRelease] = useState<any>(null)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -78,6 +81,13 @@ export default function App() {
     onScroll()
     addEventListener("scroll", onScroll, { passive: true })
     return () => removeEventListener("scroll", onScroll)
+  }, [])
+
+  useEffect(() => {
+    fetch("https://api.github.com/repos/Sahilpreetsinghvirdi/sustainability-hub/releases/latest")
+      .then((r) => r.json())
+      .then(setRelease)
+      .catch(() => {})
   }, [])
 
   // smooth sliding highlight - measures active pill and animates indicator with spring
@@ -277,6 +287,14 @@ export default function App() {
               <p className="mt-4 max-w-[560px] text-[15px] sm:text-[16px] leading-relaxed text-zinc-600 dark:text-zinc-400">
                 Photograph any garbage. <span className="font-semibold text-zinc-900 dark:text-zinc-100">Sustainability Hub</span> returns material
                 breakdown, toxins &amp; hazard, reuse ideas and <span className="font-semibold text-zinc-900 dark:text-zinc-100">exactly where to dispose it</span> — as a real Windows app.
+              </p>
+              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 px-3 py-1.5 text-xs font-medium text-emerald-800 dark:text-emerald-300">
+                <span className="hidden sm:inline">207 MB offline installer (fully offline, no WebView2) + 215 MB Android APK — one Release</span>
+                <span className="sm:hidden">207 MB offline + 215 MB APK — one Release</span>
+                <span className="hidden sm:inline-flex items-center gap-1 ml-1 rounded-full bg-emerald-600 text-white px-2 py-0.5 text-[10px]">v1.4.1</span>
+              </div>
+              <p className="mt-2 max-w-[560px] text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+                Works on any Windows 10/11 without internet + Android like Instagram. Also: small 3.8 MB online installer if you have internet.
               </p>
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
@@ -615,6 +633,13 @@ export default function App() {
                 color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
               },
               {
+                icon: Sprout,
+                title: "AgriSense",
+                desc: "Photograph any fertilizer; get NPK, suitability verdict 0–100 for crop/soil/stage, dosage, risks & alternatives.",
+                meta: "Fertilizer • NPK",
+                color: "bg-green-600",
+              },
+              {
                 icon: BarChart3,
                 title: "Dashboard",
                 desc: "One glance: carbon, energy, waste, streaks, area charts. Theme-aware (Porcelain/Midnight) with anti-flash.",
@@ -641,6 +666,20 @@ export default function App() {
                 desc: "Photo-log plate waste, streaks, breakdowns. Cut kitchen waste.",
                 meta: "Streaks",
                 color: "bg-orange-500",
+              },
+              {
+                icon: Flower2,
+                title: "PlantSense",
+                desc: "AI plant doctor — health score, diseases, care plan, fertilizer suggestions. Snap a leaf, get diagnosis.",
+                meta: "New • v1.2+",
+                color: "bg-emerald-700",
+              },
+              {
+                icon: Smartphone,
+                title: "Android Companion",
+                desc: "Same AI tools on Android, standalone APK like Instagram. No Expo Go, shares backend over LAN.",
+                meta: "New • v1.4.0",
+                color: "bg-indigo-600",
               },
               {
                 icon: Database,
@@ -681,50 +720,71 @@ export default function App() {
                 <code className="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-xs break-all">start-app.pyw</code> (windowless pythonw).
               </p>
 
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Card className="rounded-2xl p-4 border-zinc-200 dark:border-zinc-800">
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-9 items-center justify-center rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">
-                      <Package className="size-5" />
-                    </span>
-                    <div>
-                      <div className="text-sm font-bold">Portable .exe</div>
-                      <div className="text-xs text-zinc-500">Zero-install</div>
+              {/* dual download - v1.4.1 offline */}
+              {(() => {
+                const msi = (release as any)?.assets?.find((a: any) => a.name === "Sustainability-Hub-v1.4.1-offline.msi") || (release as any)?.assets?.find((a: any) => a.name.endsWith(".msi"))
+                const apk = (release as any)?.assets?.find((a: any) => a.name.endsWith(".apk"))
+                const tag = (release as any)?.tag_name || "v1.4.1"
+                const msiUrl = msi?.browser_download_url || "https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.1/Sustainability-Hub-v1.4.1-offline.msi"
+                const apkUrl = apk?.browser_download_url || "https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.1/SustainabilityHub-mobile-v1.0.4.apk"
+                const msiSize = msi ? `${(msi.size / 1024 / 1024).toFixed(0)} MB` : "207 MB"
+                const apkSize = apk ? `${(apk.size / 1024 / 1024).toFixed(0)} MB` : "215 MB"
+                return (
+                  <>
+                    <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-3 py-1 text-xs font-bold">
+                      Latest: {tag} <span className="opacity-60">•</span> {msiSize} MSI + {apkSize} APK
                     </div>
-                    <span className="ml-auto text-xs font-mono bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-full">~12MB</span>
-                  </div>
-                  <div className="mt-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border p-2.5 font-mono text-[11px] break-all">desktop/src-tauri/target/release/Sustainability Hub.exe</div>
-                </Card>
-                <Card className="rounded-2xl p-4 border-zinc-200 dark:border-zinc-800 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900">
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-9 items-center justify-center rounded-xl bg-white/15 dark:bg-zinc-900/10">
-                      <Download className="size-5" />
-                    </span>
-                    <div>
-                      <div className="text-sm font-bold">Installer .msi</div>
-                      <div className="text-xs opacity-70">Windows Installer</div>
+                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                      <Card className="rounded-2xl p-4 border-zinc-200 dark:border-zinc-800 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900">
+                        <div className="flex items-center gap-3">
+                          <span className="flex size-9 items-center justify-center rounded-xl bg-white/15 dark:bg-zinc-900/10">
+                            <Monitor className="size-5" />
+                          </span>
+                          <div>
+                            <div className="text-sm font-bold">Windows</div>
+                            <div className="text-xs opacity-70">{tag} • {msiSize} MSI • Fully offline</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 rounded-xl bg-white/10 dark:bg-zinc-900/10 border border-white/10 p-2.5 font-mono text-[11px] break-all">Sustainability-Hub-v1.4.1-offline.msi</div>
+                        <Button size="sm" className="mt-3 w-full rounded-full bg-white text-zinc-900 hover:bg-zinc-100 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800" onClick={() => window.open(msiUrl, "_blank")}>
+                          <Download className="size-4" /> Download for Windows
+                        </Button>
+                        <div className="mt-2 text-[11px] leading-relaxed opacity-70">Bundles WebView2 — no internet needed. <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/download/v1.4.0/Sustainability-Hub-v1.4.0-setup.msi" className="underline">Small 3.8 MB online installer</a> also available.</div>
+                      </Card>
+                      <Card className="rounded-2xl p-4 border-zinc-200 dark:border-zinc-800">
+                        <div className="flex items-center gap-3">
+                          <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-600 text-white">
+                            <Smartphone className="size-5" />
+                          </span>
+                          <div>
+                            <div className="text-sm font-bold">Android</div>
+                            <div className="text-xs text-zinc-500">APK • {apkSize} • Standalone</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border p-2.5 font-mono text-[11px] break-all">SustainabilityHub-mobile-v1.0.4.apk</div>
+                        <Button size="sm" className="mt-3 w-full rounded-full" onClick={() => window.open(apkUrl, "_blank")}>
+                          <Smartphone className="size-4" /> Download for Android
+                        </Button>
+                        <div className="mt-2 text-[11px] leading-relaxed text-zinc-500">Install like Instagram — allow “Install unknown apps”.</div>
+                      </Card>
                     </div>
-                    <span className="ml-auto text-xs font-mono bg-white/15 dark:bg-zinc-900/10 px-2 py-1 rounded-full">x64</span>
-                  </div>
-                  <div className="mt-3 rounded-xl bg-white/10 dark:bg-zinc-900/10 border border-white/10 dark:border-zinc-900/10 p-2.5 font-mono text-[11px] break-all">
-                    .../bundle/msi/Sustainability Hub_1.0.0_x64_en-US.msi
-                  </div>
-                </Card>
-              </div>
 
-              <div className="mt-6 flex flex-col sm:flex-row gap-3">
-                <Button size="lg" className="rounded-full h-11 px-6 bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 w-full sm:w-auto shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300" onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases", "_blank")}>
-                  <Download className="size-4" /> Download .exe / .msi
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="rounded-full h-11 px-6 w-full sm:w-auto bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300"
-                  onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub", "_blank")}
-                >
-                  <GithubIcon className="size-4" /> Source
-                </Button>
-              </div>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                      <Button size="lg" className="rounded-full h-11 px-6 bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 w-full sm:w-auto shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300" onClick={() => window.open(msiUrl, "_blank")}>
+                        <Download className="size-4" /> Download .exe / .msi
+                      </Button>
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="rounded-full h-11 px-6 w-full sm:w-auto bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300"
+                        onClick={() => window.open("https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/latest", "_blank")}
+                      >
+                        <GithubIcon className="size-4" /> All releases
+                      </Button>
+                    </div>
+                  </>
+                )
+              })()}
               <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500">
                 <ShieldCheck className="size-4" /> Code-signed • No console flash • Leaf icon
               </div>
@@ -771,6 +831,119 @@ export default function App() {
                 </div>
               </Card>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CHANGELOG - v1.4.1 */}
+      <section id="changelog" className="py-10 sm:py-16 bg-white dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[720px]">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-zinc-50 dark:bg-zinc-900 px-3 py-1 text-xs font-medium">
+              <FileText className="size-3.5" /> Changelog
+            </div>
+            <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">What shipped.</h2>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+              Latest is <span className="font-semibold text-zinc-900 dark:text-zinc-100">{(release as any)?.tag_name || "v1.4.1"}</span> — single Release with both MSI + APK.{" "}
+              <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/latest" target="_blank" rel="noreferrer" className="underline">
+                View on GitHub
+              </a>
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4">
+            {[
+              {
+                ver: "v1.4.1",
+                date: "2026-08-26",
+                badge: "Latest • Offline",
+                color: "bg-emerald-600",
+                items: ["Fully offline Windows — 207 MB MSI bundles WebView2 (no internet needed)", "Same Android APK 215 MB in one Release", "Tauri windows.webviewInstallMode: offlineInstaller"],
+              },
+              {
+                ver: "v1.4.0",
+                date: "2026-08-25",
+                badge: "First combined",
+                color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
+                items: ["First combined Release: small MSI 3.8 MB + APK 215 MB in one", "Expo 54, Waste/Agri/PlantSense + Carbon/Energy/Food", "Fixed UTF-16 asset corruption, worklets 0.5.1"],
+              },
+              {
+                ver: "v1.3.0",
+                date: "2026-08-24",
+                badge: "MSI only",
+                color: "bg-zinc-600",
+                items: ["Auto-open results, full-res 1600px, harmful red grading (0/100)", "AI keys settings, small MSI downloadBootstrapper 3.8 MB"],
+              },
+              {
+                ver: "v1.2.0",
+                date: "2026-08-23",
+                badge: "Memory",
+                color: "bg-violet-600",
+                items: ["Persistent scan history with thumbnails", "Mid-analysis navigation survival", "All pages load real persisted data"],
+              },
+            ].map((r) => (
+              <Card key={r.ver} className="rounded-2xl p-5 border-zinc-200 dark:border-zinc-800 flex gap-4">
+                <div className={`hidden sm:flex size-10 items-center justify-center rounded-xl text-white shrink-0 ${r.color}`}>
+                  <span className="text-xs font-bold">{r.ver}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-sm font-bold">{r.ver}</span>
+                    <span className="rounded-full bg-zinc-100 dark:bg-zinc-800 border px-2 py-0.5 text-[11px]">{r.date}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold text-white ${r.color}`}>{r.badge}</span>
+                  </div>
+                  <ul className="mt-2 list-disc pl-4 space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                    {r.items.map((it) => (
+                      <li key={it}>{it}</li>
+                    ))}
+                  </ul>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-10 sm:py-16">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[720px]">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-zinc-50 dark:bg-zinc-900 px-3 py-1 text-xs font-medium">
+              <Bug className="size-3.5" /> FAQ & Troubleshooting
+            </div>
+            <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">Answers, honestly.</h2>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {[
+              {
+                q: "Why 207 MB vs 3.8 MB?",
+                a: "3.8 MB is an online installer — if WebView2 is missing (common on Win 10), it downloads ~150 MB on first install. 207 MB bundles WebView2, so it installs fully offline. Both contain the complete app. After install, the app runs offline; only the AI analyzers need internet for Gemini.",
+              },
+              {
+                q: "SmartScreen / antivirus warns?",
+                a: "The MSI/APK are unsigned (student build). On Windows: “More info → Run anyway”. Antivirus may flag unsigned installers — allow it. Android: enable “Install unknown apps” for your browser, like with Instagram APK.",
+              },
+              {
+                q: "Backend port 8000 conflict?",
+                a: "The desktop app auto-starts FastAPI on :8000 + Vite on :1420 via start-app.pyw (windowless). If 8000 is busy, close the other app or change backend/.env PORT. Logs at start-app.log.",
+              },
+              {
+                q: "Camera not working?",
+                a: "Desktop: allow camera permission in Windows Settings → Privacy → Camera and in the WebView. Android: grant Camera permission when prompted. Try gallery upload if camera fails.",
+              },
+              {
+                q: "Gemini API key?",
+                a: "Put your key in backend/.env as GEMINI_API_KEY (get one at aistudio.google.com). Never put it in the website — all AI runs locally in the installed app. Without a key, trackers still work offline.",
+              },
+              {
+                q: "Receipt OCR / Food photo accuracy?",
+                a: "Receipt/bill OCR is currently simulated with plausible extraction — real OCR is on the roadmap. Food waste uses on-device color clustering (k-means in Lab), not Gemini — framed as smart estimation. Emission factors are published averages.",
+              },
+            ].map((f) => (
+              <Card key={f.q} className="rounded-2xl p-5 border-zinc-200 dark:border-zinc-800">
+                <div className="text-sm font-bold">{f.q}</div>
+                <div className="mt-1.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{f.a}</div>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -890,11 +1063,26 @@ export default function App() {
               </a>
             </div>
           </div>
-          <div className="mt-8 flex flex-col sm:flex-row gap-2 justify-between border-t border-zinc-200 dark:border-zinc-800 pt-6 text-xs text-zinc-500">
-            <span>© 2026 Sahil Virdi • Indian Science Congress 2026</span>
-            <span className="inline-flex items-center gap-1">
-              Built with <span className="text-red-500">♥</span> TypeScript • Tailwind • shadcn • Tauri • Gemini
-            </span>
+          <div className="mt-8 flex flex-col gap-2 border-t border-zinc-200 dark:border-zinc-800 pt-6 text-xs text-zinc-500">
+            <div className="flex flex-col sm:flex-row gap-2 justify-between">
+              <span>© 2026 Sahil Virdi • Indian Science Congress 2026</span>
+              <span className="inline-flex items-center gap-1">
+                Built with <span className="text-red-500">♥</span> TypeScript • Tailwind • shadcn • Tauri • Gemini
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-[11px]">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 px-2.5 py-1 text-emerald-700 dark:text-emerald-300">
+                Latest: {(release as any)?.tag_name || "v1.4.1"}
+                <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/tag/v1.4.1" target="_blank" rel="noreferrer" className="underline">
+                  Release
+                </a>
+                <span className="opacity-60">•</span>
+                <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/latest" target="_blank" rel="noreferrer" className="underline">
+                  Download
+                </a>
+              </span>
+              <span className="text-zinc-400">207 MB MSI (offline) + 215 MB APK — one Release</span>
+            </div>
           </div>
         </div>
       </footer>
