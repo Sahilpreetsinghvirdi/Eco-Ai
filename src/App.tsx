@@ -299,8 +299,8 @@ export default function App() {
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
                 <Button size="lg" className="rounded-full h-12 px-7 bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 text-[15px] shadow-lg shadow-zinc-900/10 hover:shadow-xl hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0 active:scale-[0.98] transition-all duration-300" onClick={() => go("download")}>
-                  <Download className="size-4" /> Download for Windows
-                  <span className="ml-2 hidden sm:inline-flex items-center gap-1 text-xs opacity-60">.exe • .msi <ArrowRight className="size-3" /></span>
+                  <Download className="size-4" /> Get the App
+                  <span className="ml-2 hidden sm:inline-flex items-center gap-1 text-xs opacity-60">v1.4.1 • Free <ArrowRight className="size-3" /></span>
                 </Button>
                 <Button
                   size="lg"
