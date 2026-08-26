@@ -54,7 +54,6 @@ export default function App() {
   const jumpingRef = useRef(false)
   const [release, setRelease] = useState<any>(null)
   const [centerIdx, setCenterIdx] = useState(0)
-  const [activeFeature, setActiveFeature] = useState<number | null>(null)
   const featuresSectionRef = useRef<HTMLElement>(null)
   const featuresTrackRef = useRef<HTMLDivElement>(null)
 
@@ -94,22 +93,117 @@ export default function App() {
       .catch(() => {})
   }, [])
 
-  // features: scroll down moves horizontal strip, center card prominent, sides dimmed
+  // features: smooth scroll via direct DOM — no React re-renders
   useEffect(() => {
     let raf: number
+    let lastIdx = -1
     const onScroll = () => {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(() => {
-        if (!featuresSectionRef.current || !featuresTrackRef.current) return
-        const rect = featuresSectionRef.current.getBoundingClientRect()
-        const scrollable = featuresSectionRef.current.offsetHeight - window.innerHeight
+        const section = featuresSectionRef.current
+        const track = featuresTrackRef.current
+        if (!section || !track) return
+        const rect = section.getBoundingClientRect()
+        const scrollable = section.offsetHeight - window.innerHeight
         if (scrollable <= 0) return
         const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1)
-        const maxX = featuresTrackRef.current.scrollWidth - window.innerWidth + 32
+        const maxX = track.scrollWidth - window.innerWidth + 32
         if (maxX > 0) {
-          featuresTrackRef.current.style.transform = `translateX(-${progress * maxX}px)`
+          track.style.transform = `translateX(${-progress * maxX}px)`
         }
-        setCenterIdx(Math.round(progress * 7))
+        const cards = track.children
+        const total = cards.length
+        const ci = Math.round(progress * (total - 1))
+        if (ci !== lastIdx) {
+          lastIdx = ci
+          setCenterIdx(ci)
+        }
+        for (let i = 0; i < total; i++) {
+          const d = Math.abs(i - ci)
+          const card = cards[i] as HTMLElement
+          if (!card) continue
+          if (d === 0) {
+            card.style.width = "min(420px, 32vw)"
+            card.style.transform = "scale(1) translateZ(0)"
+            card.style.opacity = "1"
+            card.style.filter = "none"
+            card.style.zIndex = "10"
+          } else if (d === 1) {
+            card.style.width = "min(300px, 22vw)"
+            card.style.transform = "scale(0.88) translateZ(-40px)"
+            card.style.opacity = "0.55"
+            card.style.filter = "blur(1px)"
+            card.style.zIndex = "5"
+          } else if (d === 2) {
+            card.style.width = "min(220px, 16vw)"
+            card.style.transform = "scale(0.76) translateZ(-80px)"
+            card.style.opacity = "0.3"
+            card.style.filter = "blur(2px)"
+            card.style.zIndex = "2"
+          } else {
+            card.style.width = "min(180px, 13vw)"
+            card.style.transform = "scale(0.65) translateZ(-120px)"
+            card.style.opacity = "0.15"
+            card.style.filter = "blur(3px)"
+            card.style.zIndex = "1"
+          }
+          card.style.transformOrigin = i < ci ? "right center" : "left center"
+          // image brightness via DOM
+          const img = card.querySelector("img") as HTMLElement | null
+          if (img) {
+            if (d === 0) {
+              img.style.opacity = "0.75"
+              img.style.filter = "brightness(1.05) contrast(1.05)"
+              img.style.transform = "scale(1.06)"
+            } else if (d === 1) {
+              img.style.opacity = "0.2"
+              img.style.filter = "brightness(0.5) saturate(0.4)"
+              img.style.transform = "scale(1)"
+            } else {
+              img.style.opacity = "0.08"
+              img.style.filter = "brightness(0.3) saturate(0.2)"
+              img.style.transform = "scale(1)"
+            }
+          }
+          // text color via DOM
+          const h3 = card.querySelector("h3") as HTMLElement | null
+          const p = card.querySelector("p") as HTMLElement | null
+          const numBadge = card.querySelector("[data-num]") as HTMLElement | null
+          const metaBadge = card.querySelector("[data-meta]") as HTMLElement | null
+          if (h3) h3.style.color = d === 0 ? "#fff" : ""
+          if (p) p.style.color = d === 0 ? "rgba(255,255,255,0.8)" : ""
+          if (numBadge) {
+            if (d === 0) {
+              numBadge.style.background = "rgba(255,255,255,0.15)"
+              numBadge.style.borderColor = "rgba(255,255,255,0.25)"
+              numBadge.style.color = "#fff"
+              numBadge.style.backdropFilter = "blur(8px)"
+            } else {
+              numBadge.style.background = ""
+              numBadge.style.borderColor = ""
+              numBadge.style.color = ""
+              numBadge.style.backdropFilter = ""
+            }
+          }
+          if (metaBadge) {
+            if (d === 0) {
+              metaBadge.style.background = "rgba(255,255,255,0.12)"
+              metaBadge.style.borderColor = "rgba(255,255,255,0.2)"
+              metaBadge.style.color = "#fff"
+              metaBadge.style.backdropFilter = "blur(8px)"
+            } else {
+              metaBadge.style.background = ""
+              metaBadge.style.borderColor = ""
+              metaBadge.style.color = ""
+              metaBadge.style.backdropFilter = ""
+            }
+          }
+          // gradient overlay
+          const grad = card.querySelector("[data-grad]") as HTMLElement | null
+          if (grad) {
+            grad.style.opacity = d === 0 ? "1" : "0"
+          }
+        }
       })
     }
     window.addEventListener("scroll", onScroll, { passive: true })
@@ -657,7 +751,7 @@ export default function App() {
           </div>
 
           <div className="flex-1 flex items-center overflow-hidden">
-            <div ref={featuresTrackRef} className="flex gap-0 w-full will-change-transform" style={{ transform: "translateX(0px)", transition: "transform 0.15s ease-out" }}>
+            <div ref={featuresTrackRef} className="flex gap-0 w-full will-change-transform" style={{ transform: "translateX(0px)" }}>
               {[
                 {
                   icon: ScanSearch,
@@ -724,72 +818,56 @@ export default function App() {
                   short: "AUTH",
                 },
               ].map((f, idx) => {
-                const isActive = activeFeature === idx
-                const dist = Math.abs(idx - centerIdx)
-                const stepped = Math.min(dist, 3)
-
                 return (
                   <Card
                     key={f.title}
-                    onMouseEnter={() => setActiveFeature(idx)}
-                    onMouseLeave={() => setActiveFeature(null)}
-                    className={`group relative flex-shrink-0 rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none last:border-r-0 ${isActive ? "z-10" : ""}`}
+                    className="group relative flex-shrink-0 rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none last:border-r-0"
                     style={{
-                      transition: "all 0.6s cubic-bezier(0.25,1,0.5,1)",
-                      width: stepped === 0 ? "min(400px, 30vw)" : stepped === 1 ? "min(300px, 22vw)" : stepped === 2 ? "min(240px, 18vw)" : "min(200px, 14vw)",
+                      transition: "width 0.5s cubic-bezier(0.25,1,0.5,1), transform 0.5s cubic-bezier(0.25,1,0.5,1), opacity 0.5s ease, filter 0.5s ease",
+                      width: "min(300px, 22vw)",
                       height: "100%",
                       minHeight: "400px",
-                      transform: stepped === 0 ? "scale(1) translateZ(0)" : stepped === 1 ? "scale(0.92) translateZ(-30px)" : stepped === 2 ? "scale(0.82) translateZ(-60px)" : "scale(0.72) translateZ(-90px)",
-                      opacity: stepped === 0 ? 1 : stepped === 1 ? 0.65 : stepped === 2 ? 0.4 : 0.25,
-                      filter: stepped === 0 ? "none" : stepped === 1 ? "blur(0.5px)" : stepped === 2 ? "blur(1px)" : "blur(2px)",
-                      transformOrigin: idx < centerIdx ? "right center" : "left center",
                     } as React.CSSProperties}
                   >
                     {/* big vertical short name — ghost */}
                     <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
                       <span
-                        className={`font-black tracking-tighter leading-none select-none transition-all duration-700 ease-out ${stepped === 0 ? "text-[64px] sm:text-[76px] text-zinc-900/[0.06] dark:text-white/[0.06]" : "text-[48px] sm:text-[56px] text-zinc-900/[0.04] dark:text-white/[0.04]"}`}
+                        className="text-[56px] sm:text-[68px] font-black tracking-tighter leading-none select-none text-zinc-900/[0.06] dark:text-white/[0.06]"
                         style={{ writingMode: "vertical-rl" } as React.CSSProperties}
                       >
                         {f.short}
                       </span>
                     </div>
 
-                    {/* image — bright when centered, dark when stepped */}
+                    {/* image */}
                     <div className="absolute inset-0 pointer-events-none">
-                      <div className={`absolute inset-0 ${f.color} transition-opacity duration-700 ${stepped === 0 ? "opacity-[0.06]" : "opacity-[0.02]"}`} />
+                      <div className={`absolute inset-0 ${f.color} opacity-[0.04]`} />
                       <img
                         src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/600/800`}
                         alt=""
-                        className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out"
-                        style={{
-                          opacity: stepped === 0 ? 0.5 : stepped === 1 ? 0.15 : 0.06,
-                          filter: stepped === 0 ? "brightness(1.1) saturate(1.1)" : stepped === 1 ? "brightness(0.6) saturate(0.5)" : "brightness(0.3) saturate(0.2)",
-                          transform: stepped === 0 ? "scale(1.05)" : "scale(1)",
-                        } as React.CSSProperties}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{ transition: "opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease" } as React.CSSProperties}
                         loading="lazy"
                       />
-                      {stepped === 0 && (
-                        <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/20 to-transparent dark:from-zinc-900/70 dark:via-zinc-900/20" />
-                      )}
+                      <div data-grad className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 pointer-events-none" style={{ transition: "opacity 0.5s ease" }} />
                     </div>
 
                     {/* content */}
                     <div className="relative p-5 sm:p-6 flex flex-col h-full">
                       <div className="flex items-start justify-between">
-                        <span className={`flex size-8 items-center justify-center rounded-full border shadow-sm text-xs font-bold transition-all duration-500 ${stepped === 0 ? "bg-white/20 border-white/30 text-white backdrop-blur-sm" : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white scale-90"}`}>
+                        <span data-num className="flex size-8 items-center justify-center rounded-full border border-zinc-200 dark:border-zinc-700 shadow-sm text-xs font-bold bg-white dark:bg-zinc-900" style={{ transition: "all 0.4s ease" }}>
                           {String(idx + 1).padStart(2, "0")}
                         </span>
-                        <span className={`flex size-8 items-center justify-center rounded-xl text-white shadow-sm ${f.color} transition-transform duration-500 ${stepped === 0 ? "scale-110 rotate-3" : "scale-90"}`}>
+                        <span className={`flex size-8 items-center justify-center rounded-xl text-white shadow-sm ${f.color}`}>
                           <f.icon className="size-4" />
                         </span>
                       </div>
 
                       <div className="mt-auto">
-                        <h3 className={`font-bold leading-tight tracking-tight transition-all duration-500 ${stepped === 0 ? "text-[17px] text-white" : "text-[14px] text-zinc-900 dark:text-white"}`}>{f.title}</h3>
-                        <p className={`mt-2 text-[13px] leading-relaxed transition-all duration-500 ${stepped === 0 ? "text-white/80 opacity-100 line-clamp-4" : "text-zinc-500 dark:text-zinc-500 opacity-70 line-clamp-2"}`}>{f.desc}</p>
+                        <h3 className="text-[15px] font-bold leading-tight tracking-tight" style={{ transition: "color 0.4s ease" }}>{f.title}</h3>
+                        <p className="mt-2 text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-500 line-clamp-3" style={{ transition: "color 0.4s ease" }}>{f.desc}</p>
                         <div className="mt-3">
-                          <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wide transition-all duration-500 ${stepped === 0 ? "bg-white/15 border border-white/20 text-white backdrop-blur-sm" : "bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white"}`}>{f.meta}</span>
+                          <span data-meta className="inline-flex rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[10px] font-bold tracking-wide" style={{ transition: "all 0.4s ease" }}>{f.meta}</span>
                         </div>
                       </div>
                     </div>
