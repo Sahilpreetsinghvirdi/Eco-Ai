@@ -1012,7 +1012,7 @@ export default function App() {
             </p>
           </div>
           {(() => {
-            const [expandedVer, setExpandedVer] = useState<string>("v1.4.13")
+            const [expandedVer, setExpandedVer] = useState<string>("")
             const releases = [
               { ver: "v1.4.13", date: "2026-08-27", badge: "Latest", dot: "bg-zinc-900 dark:bg-white", badgeColor: "bg-zinc-900 dark:bg-white dark:text-zinc-900", items: ["Key configures backend via POST /settings/ai (Gemini/OpenAI)", "baseUrl 10.0.2.2 (emulator), LAN IP for device", "Diagnose distinguishes 'key saved, backend not reachable'"], highlight: true },
               { ver: "v1.4.12", date: "2026-08-27", badge: "Navbar", dot: "bg-zinc-700", badgeColor: "bg-zinc-700", items: ["Home inside tabs — navbar now shows", "Offline mock for Diagnose"] },
@@ -1042,23 +1042,23 @@ export default function App() {
                             <div className={`lg:hidden size-3 rounded-full border-2 bg-white dark:bg-zinc-900 mt-5 shrink-0 ${r.highlight ? "border-zinc-900 dark:border-white ring-2 ring-zinc-900/20 dark:ring-white/20" : "border-zinc-300 dark:border-zinc-600"} ${r.dot} ${isExpanded ? "!bg-zinc-900 dark:!bg-white !border-zinc-900" : ""}`} style={{ boxShadow: isExpanded ? "0 0 0 4px rgba(0,0,0,0.08)" : undefined }} />
                             {/* desktop dot */}
                             <div className={`hidden lg:flex size-3.5 rounded-full border-2 bg-white dark:bg-zinc-900 shrink-0 mt-[27px] ${r.highlight ? "border-zinc-900 dark:border-white ring-2 ring-zinc-900/15 dark:ring-white/15" : "border-zinc-300 dark:border-zinc-600"} items-center justify-center`} style={{ boxShadow: isExpanded ? "0 0 0 6px rgba(0,0,0,0.06)" : undefined }}>
-                              <div className={`size-1.5 rounded-full ${r.dot} ${isExpanded ? "scale-125" : ""} transition-transform`} />
+                              <div className={`size-1.5 rounded-full ${r.dot} ${isExpanded ? "scale-125" : ""} transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]`} />
                             </div>
                             {/* stem to card — desktop */}
-                            <div className={`hidden lg:block w-px h-3 ${isExpanded ? "bg-zinc-900 dark:bg-white" : "bg-zinc-200 dark:bg-zinc-700"} transition-colors`} />
+                            <div className={`hidden lg:block w-px h-3 ${isExpanded ? "bg-zinc-900 dark:bg-white" : "bg-zinc-200 dark:bg-zinc-700"} transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]`} />
                             {/* stem — mobile */}
                             <div className="lg:hidden w-px flex-1 min-h-[12px] bg-zinc-200 dark:bg-zinc-800 mt-1" />
                           </div>
 
-                          {/* card */}
-                          <button onClick={() => setExpandedVer(isExpanded ? "" : r.ver)} className="flex-1 text-left lg:mt-0 -mt-1 w-full">
-                            <Card className={`rounded-2xl p-4 border transition-all text-left w-full ${isExpanded ? "border-zinc-900 dark:border-white shadow-lg bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 lg:scale-[1.02]" : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md bg-white dark:bg-zinc-900"}`}>
+                          {/* card — hover to expand, very smooth & slow */}
+                          <button onMouseEnter={() => setExpandedVer(r.ver)} onMouseLeave={() => setExpandedVer("")} onClick={() => setExpandedVer(isExpanded ? "" : r.ver)} className="flex-1 text-left lg:mt-0 -mt-1 w-full">
+                            <Card className={`rounded-2xl p-4 border text-left w-full transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isExpanded ? "border-zinc-900 dark:border-white shadow-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 lg:scale-[1.03]" : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md bg-white dark:bg-zinc-900"}`}>
                               <div className="flex items-center justify-between">
                                 <span className={`text-sm font-bold ${isExpanded ? "text-white dark:text-zinc-900" : "text-zinc-900 dark:text-white"}`}>{r.ver}</span>
                                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${isExpanded ? "bg-white/20 dark:bg-zinc-900/10 text-white dark:text-zinc-900" : `text-white ${r.badgeColor}`}`}>{r.badge}</span>
                               </div>
                               <div className={`mt-1 text-[11px] ${isExpanded ? "text-white/60 dark:text-zinc-500" : "text-zinc-500"}`}>{r.date} {r.highlight && <span className={`ml-1 inline-flex size-1.5 rounded-full ${isExpanded ? "bg-emerald-400" : "bg-emerald-500"} animate-pulse align-middle`} />}</div>
-                              <div className={`grid transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0"}`}>
+                              <div className={`grid transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0"}`}>
                                 <div className="overflow-hidden">
                                   <ul className={`space-y-1.5 text-xs leading-relaxed ${isExpanded ? "text-white/80 dark:text-zinc-600" : "text-zinc-600 dark:text-zinc-400"}`}>
                                     {r.items.map((it) => (
