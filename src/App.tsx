@@ -155,13 +155,13 @@ export default function App() {
 
         let tScale: number, tOp: number, tBlur: number, tImgOp: number, tImgBr: number, tImgSc: number, tTextW: number, tGradOp: number, tWidth: number
         if (d === 0) {
-          tScale = 1; tOp = 1; tBlur = 0; tImgOp = 0.65; tImgBr = 1; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 30
+          tScale = 1; tOp = 1; tBlur = 0; tImgOp = 1; tImgBr = 1; tImgSc = 1; tTextW = 1; tGradOp = 1; tWidth = 30
         } else if (d === 1) {
-          tScale = 0.92; tOp = 1; tBlur = 0; tImgOp = 0.65; tImgBr = 1; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 24
+          tScale = 0.92; tOp = 1; tBlur = 0; tImgOp = 1; tImgBr = 1; tImgSc = 1; tTextW = 1; tGradOp = 1; tWidth = 24
         } else if (d === 2) {
-          tScale = 0.84; tOp = 1; tBlur = 0; tImgOp = 0.65; tImgBr = 1; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 20
+          tScale = 0.84; tOp = 1; tBlur = 0; tImgOp = 1; tImgBr = 1; tImgSc = 1; tTextW = 1; tGradOp = 1; tWidth = 20
         } else {
-          tScale = 0.76; tOp = 1; tBlur = 0; tImgOp = 0.65; tImgBr = 1; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 17
+          tScale = 0.76; tOp = 1; tBlur = 0; tImgOp = 1; tImgBr = 1; tImgSc = 1; tTextW = 1; tGradOp = 1; tWidth = 17
         }
 
         s.scale += (tScale - s.scale) * S
@@ -841,7 +841,7 @@ export default function App() {
 
                     {/* image */}
                     <div className="absolute inset-0 pointer-events-none">
-                      <div className={`absolute inset-0 ${f.color} opacity-[0.04]`} />
+                      <div className={`absolute inset-0 ${f.color} opacity-0`} />
                       <img
                         src={`https://picsum.photos/seed/${encodeURIComponent(f.title)}/600/800`}
                         alt=""
