@@ -53,7 +53,6 @@ export default function App() {
   const [mobileIndicator, setMobileIndicator] = useState({ left: 0, width: 0, opacity: 0 })
   const jumpingRef = useRef(false)
   const [release, setRelease] = useState<any>(null)
-  const [centerIdx, setCenterIdx] = useState(0)
   const featuresSectionRef = useRef<HTMLElement>(null)
   const featuresTrackRef = useRef<HTMLDivElement>(null)
 
@@ -96,7 +95,6 @@ export default function App() {
     // features: everything lerped for silky smooth — zero CSS transitions
   useEffect(() => {
     let raf: number
-    let lastIdx = -1
     let current = 0
     let target = 0
     const LERP = 0.07
@@ -127,7 +125,6 @@ export default function App() {
       const cards = track.children
       const total = cards.length
       const ci = Math.round(current * (total - 1))
-      if (ci !== lastIdx) { lastIdx = ci; setCenterIdx(ci) }
 
       while (cs.length < total) {
         cs.push({ scale: 0.88, opacity: 0.8, blur: 0, imgOpacity: 0.15, imgBright: 0.6, imgScale: 1, textWhite: 0, gradOpacity: 0, width: 22 })
@@ -736,9 +733,6 @@ export default function App() {
                 </div>
                 <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">Scroll through the hub.</h2>
               </div>
-              <p className="max-w-[400px] text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
-                Scroll down to move horizontally. Center card is sharp &amp; full — sides fall back, dimmed in steps.
-              </p>
             </div>
           </div>
 
@@ -867,13 +861,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="mx-auto max-w-[1280px] w-full px-4 sm:px-6 lg:px-8 py-3 shrink-0 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-            <span className="hidden sm:inline">← Scroll down to move →</span>
-            <span className="sm:hidden">Scroll ↓</span>
-            <span className="inline-flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-zinc-900 dark:bg-white animate-pulse" /> {centerIdx + 1} / 8
-            </span>
-          </div>
+
         </div>
       </section>
 
