@@ -55,6 +55,21 @@ export default function App() {
   const [release, setRelease] = useState<any>(null)
   const featuresSectionRef = useRef<HTMLElement>(null)
   const featuresTrackRef = useRef<HTMLDivElement>(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
+  const autoScrollRaf = useRef<number | null>(null)
+  const startTimelineScroll = (dir: 1 | -1) => {
+    if (autoScrollRaf.current) cancelAnimationFrame(autoScrollRaf.current!)
+    const step = () => {
+      const el = timelineRef.current
+      if (!el) return
+      el.scrollLeft += dir * 6
+      const atEnd = dir === 1 ? el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 : el.scrollLeft <= 2
+      if (atEnd) { if (autoScrollRaf.current) cancelAnimationFrame(autoScrollRaf.current!); return }
+      autoScrollRaf.current = requestAnimationFrame(step)
+    }
+    autoScrollRaf.current = requestAnimationFrame(step)
+  }
+  const stopTimelineScroll = () => { if (autoScrollRaf.current) cancelAnimationFrame(autoScrollRaf.current!) }
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark)
@@ -140,13 +155,13 @@ export default function App() {
 
         let tScale: number, tOp: number, tBlur: number, tImgOp: number, tImgBr: number, tImgSc: number, tTextW: number, tGradOp: number, tWidth: number
         if (d === 0) {
-          tScale = 1; tOp = 1; tBlur = 0; tImgOp = 0.8; tImgBr = 1.05; tImgSc = 1.06; tTextW = 1; tGradOp = 1; tWidth = 28
+          tScale = 1; tOp = 1; tBlur = 0; tImgOp = 0.18; tImgBr = 1; tImgSc = 1.04; tTextW = 0; tGradOp = 0; tWidth = 30
         } else if (d === 1) {
-          tScale = 0.92; tOp = 0.85; tBlur = 0.3; tImgOp = 0.4; tImgBr = 0.8; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 24
+          tScale = 0.92; tOp = 1; tBlur = 0; tImgOp = 0.18; tImgBr = 1; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 24
         } else if (d === 2) {
-          tScale = 0.85; tOp = 0.75; tBlur = 0.5; tImgOp = 0.2; tImgBr = 0.6; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 18
+          tScale = 0.84; tOp = 1; tBlur = 0; tImgOp = 0.18; tImgBr = 1; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 20
         } else {
-          tScale = 0.8; tOp = 0.65; tBlur = 0.8; tImgOp = 0.12; tImgBr = 0.5; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 15
+          tScale = 0.76; tOp = 1; tBlur = 0; tImgOp = 0.18; tImgBr = 1; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 17
         }
 
         s.scale += (tScale - s.scale) * S
@@ -1026,12 +1041,15 @@ export default function App() {
               <div className="mt-10">
                 {/* desktop: horizontal timeline | mobile: vertical line */}
                 <div className="relative">
+                  {/* auto-scroll hover zones — hover left/right edge to scroll to ends */}
+                  <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-16 z-10" onMouseEnter={() => startTimelineScroll(-1)} onMouseLeave={stopTimelineScroll} />
+                  <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-16 z-10" onMouseEnter={() => startTimelineScroll(1)} onMouseLeave={stopTimelineScroll} />
                   {/* horizontal line (desktop) */}
                   <div className="hidden lg:block absolute top-[34px] left-[40px] right-[40px] h-px bg-zinc-200 dark:bg-zinc-800" />
                   {/* vertical line (mobile) */}
                   <div className="lg:hidden absolute left-[15px] top-0 bottom-0 w-px bg-zinc-200 dark:bg-zinc-800" />
 
-                  <div className="flex lg:flex-row flex-col gap-3 lg:gap-3 lg:overflow-x-auto lg:snap-x lg:snap-mandatory lg:pb-4 lg:px-2 lg:scrollbar-thin overflow-visible">
+                  <div ref={timelineRef} className="flex lg:flex-row flex-col gap-3 lg:gap-3 lg:overflow-x-auto lg:snap-x lg:snap-mandatory lg:pb-4 lg:px-2 lg:scrollbar-thin overflow-visible scroll-smooth">
                     {releases.map((r) => {
                       const isExpanded = expandedVer === r.ver
                       return (
