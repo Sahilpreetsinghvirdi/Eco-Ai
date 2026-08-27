@@ -1011,77 +1011,80 @@ export default function App() {
               </a>
             </p>
           </div>
-          <div className="mt-8 grid gap-4">
-            {[
-              {
-                ver: "v1.4.13",
-                date: "2026-08-27",
-                badge: "Latest • API Setup",
-                color: "bg-zinc-900 dark:bg-white dark:text-zinc-900",
-                items: ["Key actually configures backend via POST /settings/ai (Gemini or OpenAI)", "baseUrl 10.0.2.2 (emulator), LAN IP for physical device", "Diagnose offline message distinguishes 'key saved, backend not reachable' vs 'add API key'"],
-              },
-              {
-                ver: "v1.4.12",
-                date: "2026-08-27",
-                badge: "Navbar fix",
-                color: "bg-zinc-700",
-                items: ["Home now inside tabs — navbar shows on Home screen", "Plant/Agri/Waste offline mock fallback so Diagnose always works"],
-              },
-              {
-                ver: "v1.4.11",
-                date: "2026-08-27",
-                badge: "Crash fix",
-                color: "bg-red-600",
-                items: ["Fixed isConfigured() TypeError on login", "_layout hasHydrated guard, TopNavigation Modal → Alert"],
-              },
-              {
-                ver: "v1.4.10",
-                date: "2026-08-27",
-                badge: "All wired",
-                color: "bg-zinc-600",
-                items: ["Every button functional, Export CSV via expo-file-system", "Schedule real, toggles functional"],
-              },
-              {
-                ver: "v1.4.8",
-                date: "2026-08-26",
-                badge: "Visily",
-                color: "bg-violet-600",
-                items: ["Visily monochrome redesign: Dashboard, AI Overview, Waste/Agri/Plant", "4-tab bar (Home/AI/Stats/Settings), hamburger menu, zero-data fresh install"],
-              },
-              {
-                ver: "v1.4.1",
-                date: "2026-08-26",
-                badge: "Offline",
-                color: "bg-emerald-600",
-                items: ["Fully offline 207 MB MSI bundles WebView2", "Same Release with 110 MB Android APK"],
-              },
-              {
-                ver: "v1.3.0",
-                date: "2026-08-24",
-                badge: "Desktop",
-                color: "bg-zinc-500",
-                items: ["Auto-open results, full-res 1600px, harmful red grading", "AI keys settings, small MSI 3.8 MB"],
-              },
-            ].map((r) => (
-              <Card key={r.ver} className="rounded-2xl p-5 border-zinc-200 dark:border-zinc-800 flex gap-4">
-                <div className={`hidden sm:flex size-10 items-center justify-center rounded-xl text-white shrink-0 ${r.color}`}>
-                  <span className="text-xs font-bold">{r.ver}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-bold">{r.ver}</span>
-                    <span className="rounded-full bg-zinc-100 dark:bg-zinc-800 border px-2 py-0.5 text-[11px]">{r.date}</span>
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold text-white ${r.color}`}>{r.badge}</span>
+          {(() => {
+            const [expandedVer, setExpandedVer] = useState<string>("v1.4.13")
+            const releases = [
+              { ver: "v1.4.13", date: "2026-08-27", badge: "Latest", dot: "bg-zinc-900 dark:bg-white", badgeColor: "bg-zinc-900 dark:bg-white dark:text-zinc-900", items: ["Key configures backend via POST /settings/ai (Gemini/OpenAI)", "baseUrl 10.0.2.2 (emulator), LAN IP for device", "Diagnose distinguishes 'key saved, backend not reachable'"], highlight: true },
+              { ver: "v1.4.12", date: "2026-08-27", badge: "Navbar", dot: "bg-zinc-700", badgeColor: "bg-zinc-700", items: ["Home inside tabs — navbar now shows", "Offline mock for Diagnose"] },
+              { ver: "v1.4.11", date: "2026-08-27", badge: "Crash fix", dot: "bg-red-600", badgeColor: "bg-red-600", items: ["Fixed isConfigured() TypeError", "_layout guard, TopNavigation fix"] },
+              { ver: "v1.4.10", date: "2026-08-27", badge: "All wired", dot: "bg-zinc-600", badgeColor: "bg-zinc-600", items: ["Every button functional", "Export CSV, schedule real"] },
+              { ver: "v1.4.8", date: "2026-08-26", badge: "Visily", dot: "bg-violet-600", badgeColor: "bg-violet-600", items: ["Monochrome redesign", "4-tab bar, hamburger, zero-data"] },
+              { ver: "v1.4.1", date: "2026-08-26", badge: "Offline", dot: "bg-emerald-600", badgeColor: "bg-emerald-600", items: ["207 MB MSI bundles WebView2", "110 MB APK — one Release"] },
+              { ver: "v1.3.0", date: "2026-08-24", badge: "Desktop", dot: "bg-zinc-500", badgeColor: "bg-zinc-500", items: ["Auto-open results, 1600px", "Red grading, AI keys"] },
+            ]
+            return (
+              <div className="mt-10">
+                {/* desktop: horizontal timeline | mobile: vertical line */}
+                <div className="relative">
+                  {/* horizontal line (desktop) */}
+                  <div className="hidden lg:block absolute top-[34px] left-[40px] right-[40px] h-px bg-zinc-200 dark:bg-zinc-800" />
+                  {/* vertical line (mobile) */}
+                  <div className="lg:hidden absolute left-[15px] top-0 bottom-0 w-px bg-zinc-200 dark:bg-zinc-800" />
+
+                  <div className="flex lg:flex-row flex-col gap-3 lg:gap-3 lg:overflow-x-auto lg:snap-x lg:snap-mandatory lg:pb-4 lg:px-2 lg:scrollbar-thin overflow-visible">
+                    {releases.map((r) => {
+                      const isExpanded = expandedVer === r.ver
+                      return (
+                        <div key={r.ver} className="relative flex lg:flex-col flex-row gap-3 lg:gap-0 lg:shrink-0 lg:w-[240px] lg:snap-center snap-start group">
+                          {/* dot + stem */}
+                          <div className="flex flex-col items-center lg:items-center shrink-0">
+                            {/* mobile dot */}
+                            <div className={`lg:hidden size-3 rounded-full border-2 bg-white dark:bg-zinc-900 mt-5 shrink-0 ${r.highlight ? "border-zinc-900 dark:border-white ring-2 ring-zinc-900/20 dark:ring-white/20" : "border-zinc-300 dark:border-zinc-600"} ${r.dot} ${isExpanded ? "!bg-zinc-900 dark:!bg-white !border-zinc-900" : ""}`} style={{ boxShadow: isExpanded ? "0 0 0 4px rgba(0,0,0,0.08)" : undefined }} />
+                            {/* desktop dot */}
+                            <div className={`hidden lg:flex size-3.5 rounded-full border-2 bg-white dark:bg-zinc-900 shrink-0 mt-[27px] ${r.highlight ? "border-zinc-900 dark:border-white ring-2 ring-zinc-900/15 dark:ring-white/15" : "border-zinc-300 dark:border-zinc-600"} items-center justify-center`} style={{ boxShadow: isExpanded ? "0 0 0 6px rgba(0,0,0,0.06)" : undefined }}>
+                              <div className={`size-1.5 rounded-full ${r.dot} ${isExpanded ? "scale-125" : ""} transition-transform`} />
+                            </div>
+                            {/* stem to card — desktop */}
+                            <div className={`hidden lg:block w-px h-3 ${isExpanded ? "bg-zinc-900 dark:bg-white" : "bg-zinc-200 dark:bg-zinc-700"} transition-colors`} />
+                            {/* stem — mobile */}
+                            <div className="lg:hidden w-px flex-1 min-h-[12px] bg-zinc-200 dark:bg-zinc-800 mt-1" />
+                          </div>
+
+                          {/* card */}
+                          <button onClick={() => setExpandedVer(isExpanded ? "" : r.ver)} className="flex-1 text-left lg:mt-0 -mt-1 w-full">
+                            <Card className={`rounded-2xl p-4 border transition-all text-left w-full ${isExpanded ? "border-zinc-900 dark:border-white shadow-lg bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 lg:scale-[1.02]" : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md bg-white dark:bg-zinc-900"}`}>
+                              <div className="flex items-center justify-between">
+                                <span className={`text-sm font-bold ${isExpanded ? "text-white dark:text-zinc-900" : "text-zinc-900 dark:text-white"}`}>{r.ver}</span>
+                                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${isExpanded ? "bg-white/20 dark:bg-zinc-900/10 text-white dark:text-zinc-900" : `text-white ${r.badgeColor}`}`}>{r.badge}</span>
+                              </div>
+                              <div className={`mt-1 text-[11px] ${isExpanded ? "text-white/60 dark:text-zinc-500" : "text-zinc-500"}`}>{r.date} {r.highlight && <span className={`ml-1 inline-flex size-1.5 rounded-full ${isExpanded ? "bg-emerald-400" : "bg-emerald-500"} animate-pulse align-middle`} />}</div>
+                              <div className={`grid transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0"}`}>
+                                <div className="overflow-hidden">
+                                  <ul className={`space-y-1.5 text-xs leading-relaxed ${isExpanded ? "text-white/80 dark:text-zinc-600" : "text-zinc-600 dark:text-zinc-400"}`}>
+                                    {r.items.map((it) => (
+                                      <li key={it} className="flex gap-1.5"><span className={`mt-1.5 size-1 rounded-full shrink-0 ${isExpanded ? "bg-white/40 dark:bg-zinc-900/20" : "bg-zinc-400"}`} />{it}</li>
+                                    ))}
+                                  </ul>
+                                  <div className={`mt-3 inline-flex items-center gap-1 text-[11px] font-medium ${isExpanded ? "text-white/70 dark:text-zinc-500" : "text-zinc-500"}`}>View on GitHub <ExternalLink className="size-3" /></div>
+                                </div>
+                              </div>
+                              {!isExpanded && <div className="mt-2 text-[11px] text-zinc-500 dark:text-zinc-500 line-clamp-1">{r.items[0]}</div>}
+                            </Card>
+                          </button>
+                        </div>
+                      )
+                    })}
                   </div>
-                  <ul className="mt-2 list-disc pl-4 space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-                    {r.items.map((it) => (
-                      <li key={it}>{it}</li>
-                    ))}
-                  </ul>
                 </div>
-              </Card>
-            ))}
-          </div>
+                <div className="mt-4 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                  <span className="hidden lg:inline-flex items-center gap-1.5"><span className="size-1.5 rounded-full bg-zinc-900 dark:bg-white animate-pulse" /> Click a version to expand</span>
+                  <span className="lg:hidden">Tap to expand</span>
+                  <a href="https://github.com/Sahilpreetsinghvirdi/sustainability-hub/releases/latest" target="_blank" rel="noreferrer" className="ml-auto inline-flex items-center gap-1 rounded-full border border-zinc-200 dark:border-zinc-700 px-3 py-1 hover:bg-zinc-50 dark:hover:bg-zinc-800">All releases <ExternalLink className="size-3" /></a>
+                </div>
+              </div>
+            )
+          })()}
+
         </div>
       </section>
 
