@@ -145,11 +145,11 @@ export default function App() {
         if (d === 0) {
           tScale = 1; tOp = 1; tBlur = 0; tImgOp = 0.8; tImgBr = 1.05; tImgSc = 1.06; tTextW = 1; tGradOp = 1; tWidth = 32
         } else if (d === 1) {
-          tScale = 0.9; tOp = 0.75; tBlur = 0.5; tImgOp = 0.25; tImgBr = 0.7; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 22
+          tScale = 0.92; tOp = 0.85; tBlur = 0.3; tImgOp = 0.4; tImgBr = 0.8; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 24
         } else if (d === 2) {
-          tScale = 0.8; tOp = 0.6; tBlur = 1; tImgOp = 0.12; tImgBr = 0.5; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 17
+          tScale = 0.85; tOp = 0.75; tBlur = 0.5; tImgOp = 0.2; tImgBr = 0.6; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 19
         } else {
-          tScale = 0.72; tOp = 0.5; tBlur = 1.5; tImgOp = 0.06; tImgBr = 0.4; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 14
+          tScale = 0.8; tOp = 0.65; tBlur = 0.8; tImgOp = 0.12; tImgBr = 0.5; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 16
         }
 
         s.scale += (tScale - s.scale) * S
