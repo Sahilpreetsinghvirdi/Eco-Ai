@@ -140,13 +140,13 @@ export default function App() {
 
         let tScale: number, tOp: number, tBlur: number, tImgOp: number, tImgBr: number, tImgSc: number, tTextW: number, tGradOp: number, tWidth: number
         if (d === 0) {
-          tScale = 1; tOp = 1; tBlur = 0; tImgOp = 0.8; tImgBr = 1.05; tImgSc = 1.06; tTextW = 1; tGradOp = 1; tWidth = 32
+          tScale = 1; tOp = 1; tBlur = 0; tImgOp = 0.8; tImgBr = 1.05; tImgSc = 1.06; tTextW = 1; tGradOp = 1; tWidth = 28
         } else if (d === 1) {
           tScale = 0.92; tOp = 0.85; tBlur = 0.3; tImgOp = 0.4; tImgBr = 0.8; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 24
         } else if (d === 2) {
-          tScale = 0.85; tOp = 0.75; tBlur = 0.5; tImgOp = 0.2; tImgBr = 0.6; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 19
+          tScale = 0.85; tOp = 0.75; tBlur = 0.5; tImgOp = 0.2; tImgBr = 0.6; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 18
         } else {
-          tScale = 0.8; tOp = 0.65; tBlur = 0.8; tImgOp = 0.12; tImgBr = 0.5; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 16
+          tScale = 0.8; tOp = 0.65; tBlur = 0.8; tImgOp = 0.12; tImgBr = 0.5; tImgSc = 1; tTextW = 0; tGradOp = 0; tWidth = 15
         }
 
         s.scale += (tScale - s.scale) * S
@@ -159,7 +159,8 @@ export default function App() {
         s.gradOpacity += (tGradOp - s.gradOpacity) * S
         s.width += (tWidth - s.width) * S
 
-        card.style.width = `min(${Math.round(s.width * 13)}px, ${s.width}vw)`
+        card.style.width = `clamp(220px, ${s.width.toFixed(1)}vw, 460px)`
+        card.style.height = `clamp(400px, ${(58 + (s.scale - 0.8) * 10).toFixed(1)}vh, 620px)`
         card.style.transform = `scale(${s.scale}) translateZ(${-d * 40}px)`
         card.style.opacity = String(s.opacity)
         card.style.filter = s.blur > 0.1 ? `blur(${s.blur.toFixed(1)}px)` : 'none'
@@ -725,18 +726,18 @@ export default function App() {
       {/* FEATURES — horizontal scroll, center prominent, sides dimmed */}
       <section ref={featuresSectionRef} id="features" className="relative h-[220vh] sm:h-[260vh] bg-zinc-50 dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800">
         <div className="sticky top-[68px] h-[calc(100vh-68px)] min-h-[500px] flex flex-col overflow-hidden" style={{ perspective: "1200px" } as React.CSSProperties}>
-          <div className="mx-auto max-w-[1280px] w-full px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 shrink-0">
+          <div className="mx-auto max-w-[1280px] w-full px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 shrink-0">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-3 py-1 text-xs font-medium">
                   <Layers className="size-3.5" /> Platform
                 </div>
-                <h2 className="mt-3 text-[26px] sm:text-[32px] font-bold tracking-tight">Scroll through the hub.</h2>
+                <h2 className="mt-2 text-[24px] sm:text-[28px] lg:text-[32px] font-bold tracking-tight">Scroll through the hub.</h2>
               </div>
             </div>
           </div>
 
-          <div className="flex-1 flex items-center overflow-hidden">
+          <div className="flex-1 flex items-center justify-center overflow-hidden py-2">
             <div ref={featuresTrackRef} className="flex gap-0 w-full will-change-transform" style={{ transform: "translateX(0px)" }}>
               {[
                 {
@@ -809,9 +810,8 @@ export default function App() {
                     key={f.title}
                     className="group relative flex-shrink-0 rounded-none border-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden cursor-pointer select-none last:border-r-0"
                     style={{
-                      width: "min(300px, 22vw)",
-                      height: "100%",
-                      minHeight: "400px",
+                      width: "clamp(260px, 24vw, 360px)",
+                      height: "clamp(420px, 60vh, 620px)",
                     } as React.CSSProperties}
                   >
                     {/* big vertical short name — ghost */}
